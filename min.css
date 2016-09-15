@@ -8,7 +8,6 @@
   color: Black;
   font-weight: bold;
   font-family: Helvetica, Arial, Sans;
-  border: thin solid black;
   min-width: 410px;
 }
 
@@ -17,8 +16,8 @@
 }
 
 #viewerContext {
+float: left;
   margin: 5px; /* not inherited */
-  border: thin solid gray; /* not inherited */
   padding: 0px; /* not inherited */
 
   background: white;
@@ -41,8 +40,8 @@ canvas {
 }
 
 #parametersdiv {
+float: left;
   margin: 5px; /* not inherited */
-  border: thin solid rgb(200,200,200);
   border-radius: 1em;     
   padding: 10px;
 
@@ -90,9 +89,22 @@ canvas {
 #updateButton {
   margin:  5px; /* not inherited */
   border:  thin solid Black; /* not inherited */
-  padding: 2px; /* not inherited */
+  padding: 8px; /* not inherited */
   border-radius: 4px;
   background: white;
+  font-size: 16pt;
+
+  margin-left: 1em;
+}
+
+#updateButton:hover {
+  margin:  5px; /* not inherited */
+  border:  thin solid Black; /* not inherited */
+  padding: 8px; /* not inherited */
+  border-radius: 4px;
+  background: black;
+  color: white;
+  font-size: 16pt;
 
   margin-left: 1em;
 }
