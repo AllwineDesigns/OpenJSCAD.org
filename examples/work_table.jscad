@@ -1862,7 +1862,7 @@ WorkTable.prototype.BottomShelf = function() {
 }
 
 WorkTable.prototype.Shelf = function(height) {
-    return union([cube({ size: [ this.table_width, this.table_depth, this.plywood_thickness] }).subtract(this.ShelfNotches()).translate([0,0,height-this.plywood_thickness]),
+    return union([cube({ size: [ this.table_width, this.table_depth, this.plywood_thickness] }).translate([0,0,height-this.plywood_thickness]).subtract(this.ShelfNotches()),
 
     this.HorizontalTwoByFour(this.xsupport_length).translate([this.twobyfour_thickness, 0, height-this.plywood_thickness-this.twobyfour_width]),
     this.HorizontalTwoByFour(this.xsupport_length).translate([this.twobyfour_thickness, this.table_depth-this.twobyfour_thickness, height-this.plywood_thickness-this.twobyfour_width]),
