@@ -1850,7 +1850,7 @@ return this.simpson_tie;
 }
 
 WorkTable.prototype.TableTop = function() {
-    return this.Shelf(this.leg_length);
+    return this.Shelf(this.table_height);
 }
 
 WorkTable.prototype.MiddleShelf = function() {
