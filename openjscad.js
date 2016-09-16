@@ -94,7 +94,7 @@ OpenJsCad.Viewer = function(containerelement) {
     lines:   false,             // draw outlines or not
     overlay: false,             // use overlay when drawing lines or not
     smooth:  false,             // use smoothing or not
-    color:   [1,1,0,1],        // default color
+    color:   [.76,.85,.95,1],        // default color
   };
 
   // Set up WebGL state
@@ -112,7 +112,7 @@ OpenJsCad.Viewer = function(containerelement) {
   this.gl.matrixMode(this.gl.MODELVIEW);
 
   this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-  this.gl.clearColor(0.96, 0.96, 0.96, 1);
+  this.gl.clearColor(1, 1, 1, 1);
   this.gl.enable(this.gl.DEPTH_TEST);
   this.gl.enable(this.gl.CULL_FACE);
 
@@ -148,7 +148,7 @@ OpenJsCad.Viewer = function(containerelement) {
       void main() {\
         vec3 n = normalize(normal);\
         float diffuse = max(0.0, dot(light, n));\
-        float specular = pow(max(0.0, -reflect(light, n).z), 10.0) * sqrt(diffuse);\
+        float specular = pow(max(0.0, -reflect(light, n).z), 100.0);\
         gl_FragColor = vec4(mix(color * (0.3 + 0.7 * diffuse), vec3(1.0), specular), alpha);\
       }'
   );

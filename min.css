@@ -26,6 +26,7 @@ left: 0px;
 position: absolute;
   margin: 5px; /* not inherited */
   padding: 0px; /* not inherited */
+  border: 1px solid #dddddd;
 
   background: white;
   width: 400px;
@@ -49,7 +50,7 @@ canvas {
 #parametersdiv {
 position: absolute;
 top: 0px;
-left: 400px;
+left: 402px;
   margin: 5px; /* not inherited */
   border-radius: 1em;     
   padding: 10px;

@@ -1832,7 +1832,7 @@ var WorkTable = function(params) {
 	[1332,1333,1334],
 	[1335,1336,1337],
 	[1338,1339,1340],
-	[1341,1342,1343]] });
+	[1341,1342,1343]] }).setColor([.99,.99,1]);
 };
 
 WorkTable.prototype.getSolid = function() {
@@ -1870,11 +1870,11 @@ WorkTable.prototype.Shelf = function(height) {
     this.HorizontalTwoByFour(this.ysupport_length).rotateZ(90).translate([this.twobyfour_thickness, this.twobyfour_width, height-this.plywood_thickness-this.twobyfour_width]),
     this.HorizontalTwoByFour(this.ysupport_length).rotateZ(90).translate([this.table_width, this.twobyfour_width, height-this.plywood_thickness-this.twobyfour_width]),
 
-    this.SimpsonTie().setColor([.7,.7,.7]).translate([0, 0, height-this.plywood_thickness-this.twobyfour_width]),
-    this.SimpsonTie().setColor([.7,.7,.7]).rotateZ(90).translate([this.table_width, 0, height-this.plywood_thickness-this.twobyfour_width]),
+    this.SimpsonTie().translate([0, 0, height-this.plywood_thickness-this.twobyfour_width]),
+    this.SimpsonTie().rotateZ(90).translate([this.table_width, 0, height-this.plywood_thickness-this.twobyfour_width]),
 
-    this.SimpsonTie().setColor([.7,.7,.7]).rotateZ(180).translate([this.table_width, this.table_depth, height-this.plywood_thickness-this.twobyfour_width]),
-    this.SimpsonTie().setColor([.7,.7,.7]).rotateZ(270).translate([0, this.table_depth, height-this.plywood_thickness-this.twobyfour_width]) ]);
+    this.SimpsonTie().rotateZ(180).translate([this.table_width, this.table_depth, height-this.plywood_thickness-this.twobyfour_width]),
+    this.SimpsonTie().rotateZ(270).translate([0, this.table_depth, height-this.plywood_thickness-this.twobyfour_width]) ]);
 }
 
 
