@@ -2,6 +2,19 @@
  * min.css for OpenJSCAD.org viewer
  */
 
+@font-face {
+  font-family: "europa";
+  font-style: normal;
+  font-weight: 700;
+  src: url("https://fonts.typekit.net/af/de8f44/0000000000000000000129a3/27/l?subset_id=2&fvd=n3");
+}
+@font-face {
+  font-family: "futura-pt";
+  font-style: normal;
+  font-weight: 500;
+  src: url("https://fonts.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5");
+}
+
 #instantUpdate, #instantUpdateLabel {
      display: none;
  }
@@ -57,13 +70,21 @@ left: 402px;
 
   background: white;
   opacity: 0.8;
+
+font-family: "europa";
+font-size: 16px;
+line-height: 1.6em;
+letter-spacing: .5px;
+font-weight: bold;
+font-style: normal;
+color: #1f1f1f;
+text-align: center;
 }
 
 #parametersdiv table {
   margin-bottom: 5px;
 
   text-align: left;
-  font-size: 0.8em;
   font-weight: normal;
 }
 
@@ -88,35 +109,41 @@ left: 402px;
   margin:  0px; /* not inherited */
   border:  0px none gray; /* not inherited */
   padding: 0px; /* not inherited */
+  font-weigth: bold;
 }
 
 #parametersdiv input, #parametersdiv textarea, #parametersdiv select {
-  font-size: 0.9em;
-  background: #fea;
   border: none;
+  border: 1px solid #dddddd;
 }
 
 #updateButton {
-  margin:  5px; /* not inherited */
-  border:  thin solid Black; /* not inherited */
-  padding: 8px; /* not inherited */
-  border-radius: 4px;
+  margin-top: 10px;
+  border:  2px solid Black; /* not inherited */
+  padding: 21px 34px; /* not inherited */
   background: white;
   font-size: 16pt;
+  font-family: "futura-pt";
+  text-transform: uppercase;
+    transition: 0.1s background-color linear, 0.1s color linear;
+                transition-property: background-color, color;
+                transition-duration: 0.1s, 0.1s;
+                transition-timing-function: linear, linear;
+                transition-delay: 0s, 0s;
 
-  margin-left: 1em;
 }
 
 #updateButton:hover {
-  margin:  5px; /* not inherited */
-  border:  thin solid Black; /* not inherited */
-  padding: 8px; /* not inherited */
-  border-radius: 4px;
+text-align: center;
+  margin-top: 10px;
+  border:  2px solid Black; /* not inherited */
+  padding: 21px 34px; /* not inherited */
   background: black;
   color: white;
   font-size: 16pt;
+  font-family: "futura-pt";
+  text-transform: uppercase;
 
-  margin-left: 1em;
 }
 
 #tail { 
