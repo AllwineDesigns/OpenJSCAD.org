@@ -1854,11 +1854,11 @@ WorkTable.prototype.TableTop = function() {
 }
 
 WorkTable.prototype.MiddleShelf = function() {
-    return this.Shelf(26.25);
+    return this.Shelf(this.middle_shelf_height);
 }
 
 WorkTable.prototype.BottomShelf = function() {
-    return this.Shelf(7.25);
+    return this.Shelf(this.bottom_shelf_height);
 }
 
 WorkTable.prototype.Shelf = function(height) {
