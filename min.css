@@ -120,9 +120,9 @@ text-align: center;
 #updateButton {
   margin-top: 10px;
   border:  2px solid Black; /* not inherited */
-  padding: 21px 34px; /* not inherited */
+  padding: 10px 20px; /* not inherited */
   background: white;
-  font-size: 16pt;
+  font-size: 14pt;
   font-family: "futura-pt";
   text-transform: uppercase;
     transition: 0.1s background-color linear, 0.1s color linear;
@@ -137,10 +137,10 @@ text-align: center;
 text-align: center;
   margin-top: 10px;
   border:  2px solid Black; /* not inherited */
-  padding: 21px 34px; /* not inherited */
+  padding: 10px 20px; /* not inherited */
   background: black;
   color: white;
-  font-size: 16pt;
+  font-size: 14pt;
   font-family: "futura-pt";
   text-transform: uppercase;
 
