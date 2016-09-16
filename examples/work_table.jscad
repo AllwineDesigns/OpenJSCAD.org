@@ -9,8 +9,8 @@ function getParameterDefinitions() {
     { name: 'width', caption: 'Table Width', type: 'float', initial: 36 },
     { name: 'height', caption: 'Table Height', type: 'float', initial: 36 },
     { name: 'depth', caption: 'Table Depth', type: 'float', initial: 36 },
-    { name: 'bottom_shelf_height', caption: 'Bottom Shelf Height', type: 'float', initial: 7.25 },
-    { name: 'middle_shelf_height', caption: 'Middle Shelf Height (0 for no shelf)', type: 'float', initial: 26.25 }
+    { name: 'bottom_shelf_height', caption: 'Shelf 1 Height', type: 'float', initial: 7.25 },
+    { name: 'middle_shelf_height', caption: 'Shelf 2 Height', type: 'float', initial: 26.25 }
   ];
 }
 
@@ -1836,10 +1836,14 @@ var WorkTable = function(params) {
 };
 
 WorkTable.prototype.getSolid = function() {
-    var parts = [ this.LeftBackLeg(), this.LeftFrontLeg(), this.RightBackLeg(), this.RightFrontLeg(), this.TableTop(), this.BottomShelf() ];
+    var parts = [ this.LeftBackLeg(), this.LeftFrontLeg(), this.RightBackLeg(), this.RightFrontLeg(), this.TableTop() ];
 
     if(this.middle_shelf_height > 0) {
         parts.push(this.MiddleShelf());
+    }
+
+    if(this.bottom_shelf_height > 0) {
+        parts.push(this.BottomShelf());
     }
     
     return parts;
