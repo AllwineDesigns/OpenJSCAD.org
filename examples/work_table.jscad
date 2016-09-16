@@ -3,6 +3,7 @@
 // license    : MIT License
 // description: a work table
 // file       : work_table.jscad
+
 function getParameterDefinitions() {
   return [
     { name: 'width', caption: 'Table Width', type: 'float', initial: 36 },
