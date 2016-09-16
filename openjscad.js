@@ -61,7 +61,7 @@ OpenJsCad.Viewer = function(containerelement) {
     clip:     {min: 0.5,  max: 1000},  // rendering outside this range is clipped
   };
   this.plate = {
-    draw: true,                // draw or not
+    draw: false,                // draw or not
     size: 200,                 // plate size (X and Y)
   // minor grid settings
     m: {
@@ -94,7 +94,7 @@ OpenJsCad.Viewer = function(containerelement) {
     lines:   false,             // draw outlines or not
     overlay: false,             // use overlay when drawing lines or not
     smooth:  false,             // use smoothing or not
-    color:   [1,.4,1,1],        // default color
+    color:   [1,1,0,1],        // default color
   };
 
   // Set up WebGL state
@@ -112,7 +112,7 @@ OpenJsCad.Viewer = function(containerelement) {
   this.gl.matrixMode(this.gl.MODELVIEW);
 
   this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-  this.gl.clearColor(0.93, 0.93, 0.93, 1);
+  this.gl.clearColor(0.96, 0.96, 0.96, 1);
   this.gl.enable(this.gl.DEPTH_TEST);
   this.gl.enable(this.gl.CULL_FACE);
 
@@ -285,6 +285,7 @@ OpenJsCad.Viewer = function(containerelement) {
     shiftControl: shiftControl,
     cur: null //current state
   };
+  this.focusPoint = new GL.Vector(0,0,0);
 
   this.meshes = [];
 
@@ -292,6 +293,23 @@ OpenJsCad.Viewer = function(containerelement) {
 };
 
 OpenJsCad.Viewer.prototype = {
+  computeFocusPoint: function() {
+      var center = new GL.Vector(0,0,0);
+      for (var i = 0; i < this.meshes.length; i++) {
+          var mesh = this.meshes[i];
+          var boundingSphere = mesh.getBoundingSphere();
+          center.x += boundingSphere.center.x;
+          center.y += boundingSphere.center.y;
+          center.z += boundingSphere.center.z;
+      }
+      var s = 1./this.meshes.length;
+      center.x *= s;
+      center.y *= s;
+      center.z *= s;
+
+      this.focusPoint = center;
+      console.log(this.focusPoint);
+  },
   setCsg: function(csg) {
     if(0&&csg.length) {                            // preparing multiple CSG's (not union-ed), not yet working
       for(var i=0; i<csg.length; i++)
@@ -299,6 +317,7 @@ OpenJsCad.Viewer.prototype = {
     } else {
       this.meshes = this.csgToMeshes(csg);
     }
+    this.computeFocusPoint();
     this.state = 2; // showing, object
     this.onDraw();
   },
@@ -482,6 +501,7 @@ OpenJsCad.Viewer.prototype = {
     gl.rotate(this.angleX, 1, 0, 0);
     gl.rotate(this.angleY, 0, 1, 0);
     gl.rotate(this.angleZ, 0, 0, 1);
+    gl.translate(-this.focusPoint.x,-this.focusPoint.y,-this.focusPoint.z);
   // draw the solid (meshes)
     if(this.solid.draw) {
       gl.enable(gl.BLEND);
