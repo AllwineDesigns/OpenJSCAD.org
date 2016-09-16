@@ -21,7 +21,9 @@
 }
 
 #viewerContext {
-float: left;
+top: 0px;
+left: 0px;
+position: absolute;
   margin: 5px; /* not inherited */
   padding: 0px; /* not inherited */
 
@@ -45,7 +47,9 @@ canvas {
 }
 
 #parametersdiv {
-float: left;
+position: absolute;
+top: 0px;
+left: 400px;
   margin: 5px; /* not inherited */
   border-radius: 1em;     
   padding: 10px;
