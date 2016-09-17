@@ -308,7 +308,6 @@ OpenJsCad.Viewer.prototype = {
       center.z *= s;
 
       this.focusPoint = center;
-      console.log(this.focusPoint);
   },
   setCsg: function(csg) {
     if(0&&csg.length) {                            // preparing multiple CSG's (not union-ed), not yet working
