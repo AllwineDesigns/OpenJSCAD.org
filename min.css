@@ -15,18 +15,20 @@
   src: url("https://fonts.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5");
 }
 
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
 #instantUpdate, #instantUpdateLabel {
      display: none;
  }
 
 .jscad-container {
-  margin: 5px 15px 5px 5px; /* not inherited */
-  padding: 20px; /* not inherited */
   color: Black;
   font-weight: bold;
   font-family: Helvetica, Arial, Sans;
   min-width: 410px;
-  white-space: nowrap;
 }
 
 #header {
@@ -34,9 +36,7 @@
 }
 
 #viewerContext {
-top: 0px;
-left: 0px;
-position: absolute;
+float: left;
   margin: 5px; /* not inherited */
   padding: 0px; /* not inherited */
   border: 1px solid #dddddd;
@@ -44,9 +44,6 @@ position: absolute;
   background: white;
   width: 400px;
   height: 400px;
-
-  top: 0px;
-  bottom: 0px;
 }
 
 canvas { 
@@ -61,9 +58,7 @@ canvas {
 }
 
 #parametersdiv {
-position: absolute;
-top: 0px;
-left: 402px;
+float: left;
   margin: 5px; /* not inherited */
   border-radius: 1em;     
   padding: 10px;
@@ -144,6 +139,11 @@ text-align: center;
   font-family: "futura-pt";
   text-transform: uppercase;
 
+}
+
+#errordiv pre {
+color: red;
+white-space: normal;
 }
 
 #tail { 
