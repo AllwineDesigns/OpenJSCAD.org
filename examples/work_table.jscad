@@ -1890,8 +1890,8 @@ var WorkTable = function(params) {
 };
 
 WorkTable.prototype.checkErrors = function() {
-    if(this.table_height > 96) {
-        throw new Error("Table height maximum is 96.");
+    if(this.table_height > 96.75) {
+        throw new Error("Table height maximum is 96.75.");
     }
     if(this.table_height < 6.5) {
         throw new Error("Table height minimum is 6.5.");
