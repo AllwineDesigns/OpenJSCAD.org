@@ -66,7 +66,32 @@ var WorkTable = function(params) {
     this.checkErrors();
 
     var message = {
+        materials: {
+            '2x4': [
+                { 
+                    cutLength: this.xsupport_length,
+                    count: this.shelf_heights.length*2
+                },
+                { 
+                    cutLength: this.ysupport_length,
+                    count: this.shelf_heights.length*2
+                },
+                { 
+                    cutLength: this.leg_length,
+                    count: 4
+                },
+            ],
+            'plywood': [
+                {
+                    cutWidth: this.table_width,
+                    cutDepth: this.table_depth,
+                    count: this.shelf_heights.length
+                }
+            ]
+        }
     };
+
+    postMessage({ cmd: 'windowMessage', message: message });
 
     this.simpson_tie = polyhedron({ points: [
 	[-0.023040764033794403,2.9096078872680664,1.1799988746643066],

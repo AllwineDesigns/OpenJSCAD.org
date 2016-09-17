@@ -1270,6 +1270,13 @@ OpenJsCad.Processor.prototype = {
           that.state = 2; // complete
         }
         that.enableItems();
+      },
+      function(msg) {
+          try {
+              window.top.postMessage(msg, "allwinedesigns.com");
+          } catch(err) {
+              console.log(msg);
+          }
       }
     );
   // pass the libraries to the worker for import
