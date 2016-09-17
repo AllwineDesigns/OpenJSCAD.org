@@ -9,11 +9,13 @@ function getParameterDefinitions() {
     { name: 'width', caption: 'Table Width', type: 'float', initial: 36 },
     { name: 'height', caption: 'Table Height', type: 'float', initial: 36 },
     { name: 'depth', caption: 'Table Depth', type: 'float', initial: 36 },
-    { name: 'bottom_shelf_height', caption: 'Shelf 1 Height', type: 'float', initial: 7.25 },
-    { name: 'middle_shelf_height', caption: 'Shelf 2 Height', type: 'float', initial: 26.25 }
+    { name: 'shelf1_height', caption: 'Shelf 1 Height', type: 'float', initial: 7.25 },
+    { name: 'shelf2_height', caption: 'Shelf 2 Height', type: 'float', initial: 26.25 },
+    { name: 'shelf3_height', caption: 'Shelf 3 Height', type: 'float', initial: 0 },
+    { name: 'shelf4_height', caption: 'Shelf 4 Height', type: 'float', initial: 0 },
+    { name: 'shelf5_height', caption: 'Shelf 5 Height', type: 'float', initial: 0 }
   ];
 }
-
 
 function main(params) {
     var workTable = new WorkTable(params);
@@ -26,8 +28,30 @@ var WorkTable = function(params) {
     this.table_width = params.width;
     this.table_depth = params.depth;
 
-    this.bottom_shelf_height = params.bottom_shelf_height;
-    this.middle_shelf_height = params.middle_shelf_height;
+    var shelf_heights = [];
+    shelf_heights.push({ height: this.table_height, shelf: 'top' });
+
+    if(params.shelf1_height > 0) {
+        shelf_heights.push({ height: params.shelf1_height, shelf: "1" });
+    }
+    if(params.shelf2_height > 0) {
+        shelf_heights.push({ height: params.shelf2_height, shelf: "2" });
+    }
+    if(params.shelf3_height > 0) {
+        shelf_heights.push({ height: params.shelf3_height, shelf: "3" });
+    }
+    if(params.shelf4_height > 0) {
+        shelf_heights.push({ height: params.shelf4_height, shelf: "4" });
+    }
+    if(params.shelf5_height > 0) {
+        shelf_heights.push({ height: params.shelf5_height, shelf: "5" });
+    }
+
+    shelf_heights.sort(function(a,b) {
+        return b.height-a.height;
+    });
+
+    this.shelf_heights = shelf_heights;
 
     this.plywood_thickness = .75;
     this.twobyfour_thickness = 1.5;
@@ -38,6 +62,11 @@ var WorkTable = function(params) {
     this.xsupport_length = this.table_width-2*this.twobyfour_thickness;
     this.ysupport_length = this.table_depth-2*this.twobyfour_width;
     this.oversize = .1;
+
+    this.checkErrors();
+
+    var message = {
+    };
 
     this.simpson_tie = polyhedron({ points: [
 	[-0.023040764033794403,2.9096078872680664,1.1799988746643066],
@@ -1835,17 +1864,50 @@ var WorkTable = function(params) {
 	[1341,1342,1343]] }).setColor([.99,.99,1]);
 };
 
+WorkTable.prototype.checkErrors = function() {
+    if(this.table_height > 96) {
+        throw new Error("Table height maximum is 96.");
+    }
+    if(this.table_height < 6.5) {
+        throw new Error("Table height minimum is 6.5.");
+    }
+
+    if(this.table_width > 96) {
+        throw new Error("Table width maximum is 96.");
+    }
+    if(this.table_width < 12) {
+        throw new Error("Table width minimum is 12.");
+    }
+    if(this.table_depth > 48) {
+        throw new Error("Table depth maximum is 48.");
+    }
+    if(this.table_depth < 12) {
+        throw new Error("Table depth minimum is 12.");
+    }
+
+    if(this.shelf_heights[0].shelf != "top") {
+        throw new Error("Shelf " + this.shelf_heights[0].shelf + " cannot be taller than your table height.");
+    }
+
+    for(var i = 1; i < this.shelf_heights.length; i++) {
+        if(this.shelf_heights[i].height > this.shelf_heights[i-1].height-(this.plywood_thickness+this.twobyfour_width)) {
+            if(this.shelf_heights[i-1].shelf == "top") {
+                throw new Error("Shelf " + this.shelf_heights[i].shelf + " would interfere with the top of the table. Make sure shelves are more than " + (this.plywood_thickness+this.twobyfour_width) + " inches apart.");
+            } else {
+                throw new Error("Shelf " + this.shelf_heights[i].shelf + " would interfere with shelf " + this.shelf_heights[i-1].shelf + ". Make sure shelves are more than " + (this.plywood_thickness+this.twobyfour_width) + " inches apart.");
+            }
+        }
+    }
+
+}
+
 WorkTable.prototype.getSolid = function() {
-    var parts = [ this.LeftBackLeg(), this.LeftFrontLeg(), this.RightBackLeg(), this.RightFrontLeg(), this.TableTop() ];
+    var parts = [ this.LeftBackLeg(), this.LeftFrontLeg(), this.RightBackLeg(), this.RightFrontLeg() ];
 
-    if(this.middle_shelf_height > 0) {
-        parts.push(this.MiddleShelf());
+    for(var i = 0; i < this.shelf_heights.length; i++) {
+        parts.push(this.Shelf(this.shelf_heights[i].height));
     }
 
-    if(this.bottom_shelf_height > 0) {
-        parts.push(this.BottomShelf());
-    }
-    
     return parts;
 }
 
@@ -1855,14 +1917,6 @@ return this.simpson_tie;
 
 WorkTable.prototype.TableTop = function() {
     return this.Shelf(this.table_height);
-}
-
-WorkTable.prototype.MiddleShelf = function() {
-    return this.Shelf(this.middle_shelf_height);
-}
-
-WorkTable.prototype.BottomShelf = function() {
-    return this.Shelf(this.bottom_shelf_height);
 }
 
 WorkTable.prototype.Shelf = function(height) {

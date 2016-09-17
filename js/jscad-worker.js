@@ -51,8 +51,12 @@ OpenJsCad.createJscadWorker = function(fullurl, script, callback) {
 // when there is an error
 // - call back the provided function with the error
   w.onerror = function(e) {
-    var errtxt = "Error in line "+e.lineno+": "+e.message;
-    callback(errtxt, null);
+      var errtxt = "Error in line "+e.lineno+": "+e.message;
+      if(console) {
+          console.log(errtxt);
+          console.log(e);
+      }
+      callback(e.message.replace("Uncaught ", ""), null);
   };
 
   return w;
