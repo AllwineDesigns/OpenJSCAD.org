@@ -1273,7 +1273,7 @@ OpenJsCad.Processor.prototype = {
       },
       function(msg) {
           try {
-              window.top.postMessage(msg, "allwinedesigns.com");
+              window.top.postMessage(msg, "http://www.allwinedesigns.com");
           } catch(err) {
               console.log(msg);
           }
