@@ -20,7 +20,9 @@ function getParameterDefinitions() {
 function main(params) {
     var workTable = new WorkTable(params);
 
-    return workTable.getSolid();
+    var solid = workTable.getSolid();
+    
+    return solid;
 }
 
 var WorkTable = function(params) {
@@ -1930,7 +1932,7 @@ WorkTable.prototype.getSolid = function() {
     var parts = [ this.LeftBackLeg(), this.LeftFrontLeg(), this.RightBackLeg(), this.RightFrontLeg() ];
 
     for(var i = 0; i < this.shelf_heights.length; i++) {
-        parts.push(this.Shelf(this.shelf_heights[i].height));
+        Array.prototype.push.apply(parts, this.Shelf(this.shelf_heights[i].height));
     }
 
     return parts;
@@ -1945,7 +1947,7 @@ WorkTable.prototype.TableTop = function() {
 }
 
 WorkTable.prototype.Shelf = function(height) {
-    return union([cube({ size: [ this.table_width, this.table_depth, this.plywood_thickness] }).translate([0,0,height-this.plywood_thickness]).subtract(this.ShelfNotches()),
+    return [cube({ size: [ this.table_width, this.table_depth, this.plywood_thickness] }).translate([0,0,height-this.plywood_thickness]).subtract(this.ShelfNotches()),
 
     this.HorizontalTwoByFour(this.xsupport_length).translate([this.twobyfour_thickness, 0, height-this.plywood_thickness-this.twobyfour_width]),
     this.HorizontalTwoByFour(this.xsupport_length).translate([this.twobyfour_thickness, this.table_depth-this.twobyfour_thickness, height-this.plywood_thickness-this.twobyfour_width]),
@@ -1957,7 +1959,7 @@ WorkTable.prototype.Shelf = function(height) {
     this.SimpsonTie().rotateZ(90).translate([this.table_width, 0, height-this.plywood_thickness-this.twobyfour_width]),
 
     this.SimpsonTie().rotateZ(180).translate([this.table_width, this.table_depth, height-this.plywood_thickness-this.twobyfour_width]),
-    this.SimpsonTie().rotateZ(270).translate([0, this.table_depth, height-this.plywood_thickness-this.twobyfour_width]) ]);
+    this.SimpsonTie().rotateZ(270).translate([0, this.table_depth, height-this.plywood_thickness-this.twobyfour_width]) ];
 }
 
 
