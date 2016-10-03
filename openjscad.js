@@ -57,11 +57,11 @@ OpenJsCad.Viewer = function(containerelement) {
   this.camera = {
     fov: 45,                           // field of view
     angle:    {x: -60,y:  0,z:  -45},  // view angle about XYZ axis
-    position: {x:   0,y:  0,z:  100},  // initial position at XYZ
+    position: {x:   0,y:  0,z:  0},  // initial position at XYZ
     clip:     {min: 0.5,  max: 1000},  // rendering outside this range is clipped
   };
   this.plate = {
-    draw: true,                // draw or not
+    draw: false,                // draw or not
     size: 200,                 // plate size (X and Y)
   // minor grid settings
     m: {
@@ -273,6 +273,7 @@ OpenJsCad.Viewer = function(containerelement) {
   this.viewpointX = this.camera.position.x;
   this.viewpointY = this.camera.position.y;
   this.viewpointZ = this.camera.position.z;
+  this.zoom = 100;
 
   this.onZoomChanged = null;
 
@@ -378,7 +379,7 @@ OpenJsCad.Viewer.prototype = {
   setZoom: function(coeff) { //0...1
     coeff=Math.max(coeff, 0);
     coeff=Math.min(coeff, 1);
-    this.viewpointZ = this.camera.clip.min + coeff * (this.camera.clip.max - this.camera.clip.min);
+    this.zoom = this.camera.clip.min + coeff * (this.camera.clip.max - this.camera.clip.min);
     if(this.onZoomChanged) {
       this.onZoomChanged();
     }
@@ -386,8 +387,19 @@ OpenJsCad.Viewer.prototype = {
   },
 
   getZoom: function() {
-    var coeff = (this.viewpointZ-this.camera.clip.min) / (this.camera.clip.max - this.camera.clip.min);
+    var coeff = (this.zoom-this.camera.clip.min) / (this.camera.clip.max - this.camera.clip.min);
     return coeff;
+  },
+
+  updateCameraMatrix: function() {
+      var xRot = GL.Matrix.rotate(this.angleX, 1,0,0);
+      var yRot = GL.Matrix.rotate(this.angleY, 0,1,0);
+      var zRot = GL.Matrix.rotate(this.angleZ, 0,0,1);
+
+      var mat = GL.Matrix.multiply(xRot, yRot);
+      mat = GL.Matrix.multiply(mat, zRot);
+
+      this.cameraMatrix = mat;
   },
 
   onMouseMove: function(e) {
@@ -401,11 +413,20 @@ OpenJsCad.Viewer.prototype = {
       if(e.altKey||b==3) {                     // ROTATE X,Y (ALT or right mouse button)
         this.angleY += e.deltaX;
         this.angleX += e.deltaY;
+        this.updateCameraMatrix();
         //this.angleX = Math.max(-180, Math.min(180, this.angleX));
+
       } else if(e.shiftKey||b==2) {            // PAN  (SHIFT or middle mouse button)
         var factor = 5e-3;
-        this.viewpointX += factor * e.deltaX * this.viewpointZ;
-        this.viewpointY -= factor * e.deltaY * this.viewpointZ;
+
+        this.viewpointX += factor * e.deltaX * this.zoom * this.cameraMatrix.m[0];
+        this.viewpointY += factor * e.deltaX * this.zoom * this.cameraMatrix.m[1];
+        this.viewpointZ += factor * e.deltaX * this.zoom * this.cameraMatrix.m[2];
+
+        this.viewpointX += -factor * e.deltaY * this.zoom * this.cameraMatrix.m[4];
+        this.viewpointY += -factor * e.deltaY * this.zoom * this.cameraMatrix.m[5];
+        this.viewpointZ += -factor * e.deltaY * this.zoom * this.cameraMatrix.m[6];
+
       } else if(e.ctrlKey||e.metaKey) {                   // ZOOM IN/OU
         var factor = Math.pow(1.006, e.deltaX+e.deltaY);
         var coeff = this.getZoom();
@@ -414,8 +435,9 @@ OpenJsCad.Viewer.prototype = {
       } else {                                 // ROTATE X,Z  left mouse button
         this.angleZ += e.deltaX;
         this.angleX += e.deltaY;
+        this.updateCameraMatrix();
       }
-      console.log({rotx: this.angleX, roty: this.angleY, rotz: this.angleZ, x: this.viewpointX, y: this.viewpointY, z: this.viewpointZ});
+      //console.log({rotx: this.angleX, roty: this.angleY, rotz: this.angleZ, x: this.viewpointX, y: this.viewpointY, z: this.viewpointZ});
       this.onDraw();
     }
   },
@@ -459,7 +481,7 @@ OpenJsCad.Viewer.prototype = {
           .addClass('shift-vertical')
           .css('top', e.gesture.center.pageY + 'px');
       delta = e.gesture.deltaY - this.touch.lastY;
-      this.viewpointY -= factor * delta * this.viewpointZ;
+      this.viewpointY -= factor * delta * this.zoom;
       this.angleX += delta;
     }
     if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
@@ -468,7 +490,7 @@ OpenJsCad.Viewer.prototype = {
           .addClass('shift-horizontal')
           .css('left', e.gesture.center.pageX + 'px');
       delta = e.gesture.deltaX - this.touch.lastX;
-      this.viewpointX += factor * delta * this.viewpointZ;
+      this.viewpointX += factor * delta * this.zoom;
       this.angleZ += delta;
     }
     if (delta)
@@ -497,11 +519,11 @@ OpenJsCad.Viewer.prototype = {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.loadIdentity();
   // set the perspective based on the camera postion
-    gl.translate(0,0,-this.viewpointZ);
+    gl.translate(0,0,-this.zoom);
     gl.rotate(this.angleX, 1, 0, 0);
     gl.rotate(this.angleY, 0, 1, 0);
     gl.rotate(this.angleZ, 0, 0, 1);
-    gl.translate(this.viewpointX, this.viewpointY, 0);
+    gl.translate(this.viewpointX, this.viewpointY, this.viewpointZ);
     gl.translate(-this.focusPoint.x,-this.focusPoint.y,-this.focusPoint.z);
   // draw the solid (meshes)
     if(this.solid.draw) {
@@ -957,7 +979,7 @@ OpenJsCad.Processor.prototype = {
       };
 
       this.containerdiv.appendChild(this.zoomControl);
-      this.zoomControl.scrollLeft = this.viewer.viewpointZ / this.viewer.camera.clip.max *
+      this.zoomControl.scrollLeft = this.viewer.zoom / this.viewer.camera.clip.max *
          (this.zoomControl.scrollWidth - this.zoomControl.offsetWidth);
 
       //end of zoom control
