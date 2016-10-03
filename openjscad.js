@@ -61,7 +61,7 @@ OpenJsCad.Viewer = function(containerelement) {
     clip:     {min: 0.5,  max: 1000},  // rendering outside this range is clipped
   };
   this.plate = {
-    draw: false,                // draw or not
+    draw: true,                // draw or not
     size: 200,                 // plate size (X and Y)
   // minor grid settings
     m: {
@@ -415,6 +415,7 @@ OpenJsCad.Viewer.prototype = {
         this.angleZ += e.deltaX;
         this.angleX += e.deltaY;
       }
+      console.log({rotx: this.angleX, roty: this.angleY, rotz: this.angleZ, x: this.viewpointX, y: this.viewpointY, z: this.viewpointZ});
       this.onDraw();
     }
   },
@@ -496,10 +497,11 @@ OpenJsCad.Viewer.prototype = {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.loadIdentity();
   // set the perspective based on the camera postion
-    gl.translate(this.viewpointX, this.viewpointY, -this.viewpointZ);
+    gl.translate(0,0,-this.viewpointZ);
     gl.rotate(this.angleX, 1, 0, 0);
     gl.rotate(this.angleY, 0, 1, 0);
     gl.rotate(this.angleZ, 0, 0, 1);
+    gl.translate(this.viewpointX, this.viewpointY, 0);
     gl.translate(-this.focusPoint.x,-this.focusPoint.y,-this.focusPoint.z);
   // draw the solid (meshes)
     if(this.solid.draw) {
