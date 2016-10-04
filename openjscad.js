@@ -58,6 +58,7 @@ OpenJsCad.Viewer = function(containerelement) {
     fov: 45,                           // field of view
     angle:    {x: -60,y:  0,z:  -45},  // view angle about XYZ axis
     position: {x:   0,y:  0,z:  0},  // initial position at XYZ
+    zoom: 100,
     clip:     {min: 0.5,  max: 1000},  // rendering outside this range is clipped
   };
   this.plate = {
@@ -273,7 +274,7 @@ OpenJsCad.Viewer = function(containerelement) {
   this.viewpointX = this.camera.position.x;
   this.viewpointY = this.camera.position.y;
   this.viewpointZ = this.camera.position.z;
-  this.zoom = 100;
+  this.zoom = this.camera.zoom;
 
   this.onZoomChanged = null;
 
@@ -337,6 +338,7 @@ OpenJsCad.Viewer.prototype = {
     this.viewpointX = this.camera.position.x;
     this.viewpointY = this.camera.position.y;
     this.viewpointZ = this.camera.position.z;
+    this.zoom = this.camera.zoom;
     this.onDraw();
   },
 
@@ -458,10 +460,12 @@ OpenJsCad.Viewer.prototype = {
       //tilt
       delta = e.gesture.deltaY - this.touch.lastY;
       this.angleX += delta;
+      this.updateCameraMatrix();
     } else if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
       //pan
       delta = e.gesture.deltaX - this.touch.lastX;
       this.angleZ += delta;
+      this.updateCameraMatrix();
     }
     if (delta)
       this.onDraw();
@@ -481,8 +485,11 @@ OpenJsCad.Viewer.prototype = {
           .addClass('shift-vertical')
           .css('top', e.gesture.center.pageY + 'px');
       delta = e.gesture.deltaY - this.touch.lastY;
-      this.viewpointY -= factor * delta * this.zoom;
-      this.angleX += delta;
+
+        this.viewpointX += -factor * delta * this.zoom * this.cameraMatrix.m[4];
+        this.viewpointY += -factor * delta * this.zoom * this.cameraMatrix.m[5];
+        this.viewpointZ += -factor * delta * this.zoom * this.cameraMatrix.m[6];
+
     }
     if (this.touch.lastX && (e.gesture.direction == 'left' || e.gesture.direction == 'right')) {
       this.touch.shiftControl
@@ -490,8 +497,10 @@ OpenJsCad.Viewer.prototype = {
           .addClass('shift-horizontal')
           .css('left', e.gesture.center.pageX + 'px');
       delta = e.gesture.deltaX - this.touch.lastX;
-      this.viewpointX += factor * delta * this.zoom;
-      this.angleZ += delta;
+
+        this.viewpointX += factor * delta * this.zoom * this.cameraMatrix.m[0];
+        this.viewpointY += factor * delta * this.zoom * this.cameraMatrix.m[1];
+        this.viewpointZ += factor * delta * this.zoom * this.cameraMatrix.m[2];
     }
     if (delta)
       this.onDraw();
