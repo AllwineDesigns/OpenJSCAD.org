@@ -41,13 +41,16 @@ var WorkBench = function(params) {
     this.yjoist_length = this.table_depth-2*this.twobyfour_thickness;
 
     this.numYJoists = Math.ceil((this.table_width-this.twobyfour_thickness)/24)+1;
-    this.spaceBetween = (this.table_width-this.twobyfour_thickness)/this.numYJoists;
+    this.spaceBetween = (this.table_width-this.twobyfour_thickness)/(this.numYJoists-1);
     console.log(this.numYJoists)
     console.log(this.spaceBetween);
 
     this.checkErrors();
 
     var message = {
+        dimensions: {
+            support_height: this.support_height
+        },
         materials: {
             '2x4': {},
             'plywood': [
