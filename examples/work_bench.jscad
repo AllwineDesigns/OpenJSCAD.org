@@ -10,10 +10,8 @@ function getParameterDefinitions() {
     { name: 'height', caption: 'Table Height', type: 'float', initial: 43 },
     { name: 'depth', caption: 'Table Depth', type: 'float', initial: 36 },
     { name: 'backboard', caption: 'Backboard', type: 'checkbox', checked: true },
-    { name: 'backboard_shelf_height', caption: 'Backboard Shelf Height', type: 'float', initial: 72 },
-    { name: 'backboard_shelf_depth', caption: 'Backboard Shelf Depth', type: 'float', initial: 11.875 },
-    { name: 'backboard_shelf_gap', caption: 'Backboard Shelf Gap', type: 'float', initial: 2 },
-    { name: 'backboard_gap', caption: 'Backboard Peg Board Gap', type: 'float', initial: 3.5 }
+    { name: 'backboard_shelf_height', caption: 'Shelf Height', type: 'float', initial: 74.75 },
+    { name: 'backboard_shelf_depth', caption: 'Shelf Depth', type: 'float', initial: 11.875 },
   ];
 }
 
@@ -33,8 +31,9 @@ var WorkBench = function(params) {
     this.backboard = params.backboard;
     this.backboard_shelf_height = params.backboard_shelf_height;
     this.backboard_shelf_depth = params.backboard_shelf_depth;
-    this.backboard_shelf_gap = params.backboard_shelf_gap;
-    this.backboard_gap = params.backboard_gap;
+
+    this.backboard_shelf_gap = 2;
+    this.backboard_gap = 3.5;
 
     this.plywood_thickness = .75;
     this.twobyfour_thickness = 1.5;
