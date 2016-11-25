@@ -4,6 +4,8 @@
 // description: a work table
 // file       : work_table.jscad
 
+include('greedy_stock_problem.jscad');
+
 function getParameterDefinitions() {
   return [
     { name: 'width', caption: 'Table Width', type: 'float', initial: 96 },
@@ -45,7 +47,6 @@ var WorkBench = function(params) {
     this.backboard_joist_length = this.backboard_frame_height-2*this.twobyfour_thickness-this.table_height;
     this.backboard_shelf_support_length = this.backboard_shelf_depth+this.twobyfour_width;
     this.backboard_pegboard_height = this.backboard_shelf_height-this.plywood_thickness-this.twobyfour_width-this.table_height-this.backboard_gap;
-    console.log("pegboard height" + this.backboard_pegboard_height);
 
     this.leg_length = this.table_height-this.plywood_thickness;
     this.cross_support_length = Math.round(8*(sqrt(2)*.5*(this.table_depth-4*this.twobyfour_thickness)+this.twobyfour_width))/8;
@@ -58,39 +59,29 @@ var WorkBench = function(params) {
 
     this.numYJoists = Math.ceil((this.table_width-this.twobyfour_thickness)/24)+1;
     this.spaceBetween = (this.table_width-this.twobyfour_thickness)/(this.numYJoists-1);
-    console.log(this.numYJoists)
-    console.log(this.spaceBetween);
 
     this.checkErrors();
 
-    var message = {
-        dimensions: {
-            support_height: this.support_height
-        },
-        materials: {
-            '2x4': {
-            },
-            'plywood': [
-                {
-                    cutWidth: this.table_width,
-                    cutDepth: this.table_depth
-                }
-            ]
-        }
-    };
+    var message = {};
 
-    message.materials['2x4']['table_top_joists'] = { cut_length: this.yjoist_length, count: this.numYJoists };
-    message.materials['2x4']['legs'] = { cut_length: this.leg_length, count: 8 };
-    message.materials['2x4']['side_supports'] = { cut_length: this.support_length, count: 2 };
-    message.materials['2x4']['cross_supports'] = { cut_length: this.cross_support_length, count: 4};
-    message.materials['2x4']['table_width'] = { cut_length: this.table_width, count: 2};
+    var materials = [ { cut_length: this.yjoist_length, count: this.numYJoists, id: 'table_top_joists' },
+                      { cut_length: this.leg_length, count: 8, id: 'legs' },
+                      { cut_length: this.support_length, count: 2, id: 'side_supports' },
+                      { cut_length: this.cross_support_length, count: 4, id: 'cross_supports'},
+                      { cut_length: this.table_width, count: 2, id: 'table_width'}
+    ];
 
     if(this.backboard) {
-        message.materials['2x4']['backboard_width'] = { cut_length: this.table_width, count: 2};
-        message.materials['2x4']['shelf_supports'] = { cut_length: this.backboard_shelf_support_length, count: this.numYJoists };
-        message.materials['2x4']['backboard_joists'] = { cut_length: this.backboard_joist_length, count: this.numYJoists };
+        materials.push({ cut_length: this.table_width, count: 2, id: 'backboard_width' });
+        materials.push({ cut_length: this.backboard_shelf_support_length, count: this.numYJoists, id: 'shelf_supports' });
+        materials.push({ cut_length: this.backboard_joist_length, count: this.numYJoists, id: 'backboard_joists' });
     }
-    console.log(message);
+
+    var order = new CuttingStockOrder(materials, 96);
+
+    message.materials = {
+        '2x4': order.cutlist
+    };
 
     postMessage({ cmd: 'windowMessage', message: message });
 };
