@@ -107,7 +107,7 @@ var WorkBench = function(params) {
         'plywood': [],
         'peg_board': [],
         'screws2.5': 2*this.numYJoists+2*4+16,
-        'screws3': 4*this.numYJoists+3*4+2*8+4*this.numYJoists,
+        'screws3': 4*this.numYJoists+3*4+2*8,
         'screws4': 0
     };
 
