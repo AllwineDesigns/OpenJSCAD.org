@@ -106,10 +106,16 @@ var WorkBench = function(params) {
         '2x4': cutlist,
         'plywood': [],
         'peg_board': [],
-        'screws2.5': 2*this.numYJoists+2*4+16+3*this.numYJoists+2*this.numYJoists+3*this.numYJoists,
+        'screws2.5': 2*this.numYJoists+2*4+16,
         'screws3': 4*this.numYJoists+3*4+2*8+4*this.numYJoists,
-        'screws4': 1+4*(this.numYJoists-1)
+        'screws4': 0
     };
+
+    if(this.backboard) {
+        message.materials['screws2.5'] += +3*this.numYJoists+2*this.numYJoists+3*this.numYJoists;
+        message.materials['screws3'] += 4*this.numYJoists;
+        message.materials['screws4'] += 1+4*(this.numYJoists-1);
+    }
 
     if(this.backboard) {
         message.materials.peg_board.push([{ w: this.table_width, h: this.backboard_pegboard_height, x: 0, y: 0, id: 'pegboard', label: 'K' }]);
