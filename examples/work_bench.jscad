@@ -87,7 +87,7 @@ var WorkBench = function(params) {
     };
 
     if(this.backboard) {
-        message.materials.peg_board.push({ w: this.table_width, h: this.backboard_pegboard_height });
+        message.materials.peg_board.push({ w: this.table_width, h: this.backboard_pegboard_height, x: 0, y: 0 });
     }
 
     var kerf = .125;
