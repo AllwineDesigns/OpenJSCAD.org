@@ -5,6 +5,7 @@
 // file       : work_table.jscad
 
 include('greedy_stock_problem.jscad');
+include('packer.js');
 
 function getParameterDefinitions() {
   return [
@@ -80,9 +81,46 @@ var WorkBench = function(params) {
     var order = new CuttingStockOrder(materials, 96);
 
     message.materials = {
-        '2x4': order.cutlist
+        '2x4': order.cutlist,
+        'plywood': [],
+        'peg_board': []
     };
 
+    if(this.backboard) {
+        message.materials.peg_board.push({ w: this.table_width, h: this.backboard_pegboard_height });
+    }
+
+    var kerf = .125;
+
+    var blocks = [
+        { w: this.table_width+kerf, h: this.table_depth+kerf }
+    ];
+
+    if(this.backboard) {
+        blocks.push({ w: this.table_width+kerf, h: this.backboard_shelf_depth+kerf });
+    }
+
+    var packer = new Packer(96+kerf, 48+kerf);
+    while(blocks.length > 0) {
+        var sheet = [];
+        packer.fit(blocks);
+
+        var did_not_fit = [];
+
+        for(var n = 0; n < blocks.length; n++) {
+            var block = blocks[n];
+            if(block.fit) {
+                sheet.push({ w: block.w-kerf, h: block.h-kerf, x: block.fit.x, y: block.fit.y });
+            } else {
+                did_not_fit.push(block);
+            }
+        }
+
+        blocks = did_not_fit;
+        message.materials.plywood.push(sheet);
+    }
+
+    console.log(message);
     postMessage({ cmd: 'windowMessage', message: message });
 };
 
