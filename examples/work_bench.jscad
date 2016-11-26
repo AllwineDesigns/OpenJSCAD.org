@@ -65,8 +65,8 @@ var WorkBench = function(params) {
 
     var message = {
         dimensions: [
-            { dimension: Math.round(this.spaceBetween*8)/8, id: 'joist_spacing', label: 'I' },
-            { dimension: Math.round((this.support_height)*8)/8, id: 'support_height', label: 'II' }
+            { dimension: Math.round(this.spaceBetween*8)/8, id: 'joist_spacing', label: 'I', description: 'Space between each joist on the table top and backboard.' },
+            { dimension: Math.round((this.support_height)*8)/8, id: 'support_height', label: 'II', description: 'Height from the ground to the top of the horizontal joist that attaches the cross supports to the legs.' }
         ]
     };
 
