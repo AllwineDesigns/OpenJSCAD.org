@@ -80,24 +80,41 @@ var WorkBench = function(params) {
 
     var order = new CuttingStockOrder(materials, 96);
 
+    var cutlist = order.cutlist;
+    var labels = {
+        backboard_width: 'G',
+        table_width: 'A',
+        legs: 'D',
+        table_top_joists: 'B',
+        cross_supports: 'F',
+        side_supports: 'E',
+        backboard_joists: 'H',
+        shelf_supports: 'I'
+    };
+    for(var i = 0; i < cutlist.length; i++) {
+        for(var j = 0; j < cutlist[i].length; j++) {
+            cutlist[i][j].label = labels[cutlist[i][j].id];
+        }
+    }
+
     message.materials = {
-        '2x4': order.cutlist,
+        '2x4': cutlist,
         'plywood': [],
         'peg_board': []
     };
 
     if(this.backboard) {
-        message.materials.peg_board.push([{ w: this.table_width, h: this.backboard_pegboard_height, x: 0, y: 0 }]);
+        message.materials.peg_board.push([{ w: this.table_width, h: this.backboard_pegboard_height, x: 0, y: 0, id: 'pegboard', label: 'K' }]);
     }
 
     var kerf = .125;
 
     var blocks = [
-        { w: this.table_width+kerf, h: this.table_depth+kerf }
+        { w: this.table_width+kerf, h: this.table_depth+kerf, id: 'table_top', label: 'C' }
     ];
 
     if(this.backboard) {
-        blocks.push({ w: this.table_width+kerf, h: this.backboard_shelf_depth+kerf });
+        blocks.push({ w: this.table_width+kerf, h: this.backboard_shelf_depth+kerf, id: 'shelf', label: 'J' });
     }
 
     var attempts = 0;
@@ -112,7 +129,7 @@ var WorkBench = function(params) {
         for(var n = 0; n < blocks.length; n++) {
             var block = blocks[n];
             if(block.fit) {
-                sheet.push({ w: block.w-kerf, h: block.h-kerf, x: block.fit.x, y: block.fit.y });
+                sheet.push({ w: block.w-kerf, h: block.h-kerf, x: block.fit.x, y: block.fit.y, id: block.id, label: block.label });
             } else {
                 did_not_fit.push(block);
             }
@@ -122,6 +139,7 @@ var WorkBench = function(params) {
         message.materials.plywood.push(sheet);
         attempts++;
     }
+
     if(blocks.length > 0) {
         console.log("too many attempts");
         console.log(blocks);
