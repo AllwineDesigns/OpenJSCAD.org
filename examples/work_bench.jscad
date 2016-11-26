@@ -100,8 +100,10 @@ var WorkBench = function(params) {
         blocks.push({ w: this.table_width+kerf, h: this.backboard_shelf_depth+kerf });
     }
 
-    var packer = new Packer(96+kerf, 48+kerf);
-    while(blocks.length > 0) {
+    var attempts = 0;
+    var total_attempts = blocks.length;
+    while(blocks.length > 0 && attempts < total_attempts) {
+        var packer = new Packer(96+kerf, 48+kerf);
         var sheet = [];
         packer.fit(blocks);
 
@@ -118,6 +120,11 @@ var WorkBench = function(params) {
 
         blocks = did_not_fit;
         message.materials.plywood.push(sheet);
+        attempts++;
+    }
+    if(blocks.length > 0) {
+        console.log("too many attempts");
+        console.log(blocks);
     }
 
     console.log(message);
