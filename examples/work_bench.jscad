@@ -1,8 +1,8 @@
 // title      : Work Table
 // author     : John Allwine
 // license    : MIT License
-// description: a work table
-// file       : work_table.jscad
+// description: a standing work table
+// file       : work_bench.jscad
 
 include('greedy_stock_problem.jscad');
 include('packer.js');
@@ -87,7 +87,7 @@ var WorkBench = function(params) {
     };
 
     if(this.backboard) {
-        message.materials.peg_board.push({ w: this.table_width, h: this.backboard_pegboard_height, x: 0, y: 0 });
+        message.materials.peg_board.push([{ w: this.table_width, h: this.backboard_pegboard_height, x: 0, y: 0 }]);
     }
 
     var kerf = .125;
