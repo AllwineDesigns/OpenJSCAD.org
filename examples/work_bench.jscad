@@ -63,7 +63,12 @@ var WorkBench = function(params) {
 
     this.checkErrors();
 
-    var message = {};
+    var message = {
+        dimensions: [
+            { dimension: this.spaceBetween, id: 'joist_spacing', label: 'I' },
+            { dimension: this.support_height, id: 'support_height', label: 'II' }
+        ]
+    };
 
     var materials = [ { cut_length: this.yjoist_length, count: this.numYJoists, id: 'table_top_joists' },
                       { cut_length: this.leg_length, count: 8, id: 'legs' },
@@ -100,7 +105,10 @@ var WorkBench = function(params) {
     message.materials = {
         '2x4': cutlist,
         'plywood': [],
-        'peg_board': []
+        'peg_board': [],
+        'screws2.5': 2*this.numYJoists+2*4+16+3*this.numYJoists+2*this.numYJoists+3*this.numYJoists,
+        'screws3': 4*this.numYJoists+3*4+2*8+4*this.numYJoists,
+        'screws4': 1+4*(this.numYJoists-1)
     };
 
     if(this.backboard) {
