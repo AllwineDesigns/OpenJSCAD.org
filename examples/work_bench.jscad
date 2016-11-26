@@ -65,8 +65,8 @@ var WorkBench = function(params) {
 
     var message = {
         dimensions: [
-            { dimension: this.spaceBetween, id: 'joist_spacing', label: 'I' },
-            { dimension: this.support_height, id: 'support_height', label: 'II' }
+            { dimension: Math.round(this.spaceBetween*8)/8, id: 'joist_spacing', label: 'I' },
+            { dimension: Math.round((this.support_height)*8)/8, id: 'support_height', label: 'II' }
         ]
     };
 
