@@ -122,7 +122,11 @@ var WorkBench = function(params) {
     };
 
     if(this.backboard) {
-        message.materials['screws2.5'] += +3*this.numYJoists+2*this.numYJoists+3*this.numYJoists;
+        message.materials['screws2.5'] += 3*this.numYJoists;
+
+        if(this.backboard_shelf_depth > 0) {
+            message.materials['screws2.5'] += 2*this.numYJoists+3*this.numYJoists;
+        }
         message.materials['screws3'] += 4*this.numYJoists;
         message.materials['screws4'] += 1+4*(this.numYJoists-1);
     }
