@@ -137,7 +137,7 @@ var WorkBench = function(params) {
         { w: this.table_width+kerf, h: this.table_depth+kerf, id: 'table_top', label: 'C' }
     ];
 
-    if(this.backboard) {
+    if(this.backboard && this.backboard_shelf_depth > 0) {
         blocks.push({ w: this.table_width+kerf, h: this.backboard_shelf_depth+kerf, id: 'shelf', label: 'J' });
     }
 
