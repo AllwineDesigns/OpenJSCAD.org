@@ -95,9 +95,7 @@ var WorkTable = function(params) {
             id: 'leg'
         }
     ];
-    console.log("here");
     var order = new CuttingStockOrder(cuts2x4, 96);
-    console.log("asdf");
     var cutlist = order.cutlist;
     var labels = {
         xsupport: 'B',
@@ -117,17 +115,24 @@ var WorkTable = function(params) {
             'strong_ties': [],
             'screws1.5': 0,
             'screws1': 0
-        }
+        },
+        dimensions: []
     };
 
     var kerf = .125;
 
     var blocks = [ ];
 
-    for(var i = 0; i < this.shelf_heights.length; i++) {
-        blocks.push({ w: this.table_width+kerf, h: this.table_depth+kerf, id: 'shelf' + i, label: String.fromCharCode(68+i) });
+    for(var i = this.shelf_heights.length-1; i >= 0; i--) {
+        var shelf = this.shelf_heights.length-i;
+        if(i == 0) {
+            blocks.push({ w: this.table_width+kerf, h: this.table_depth+kerf, id: 'table_top', label: String.fromCharCode(67+shelf) });
+            message.dimensions.push({ dimension: this.shelf_heights[i].height-4.25, id: 'shelf' + shelf, label: Array(shelf+1).join("I"), description: 'Align the strong ties for the table top so that the bottom of each 2x4 is at this height.' });
+        } else {
+            blocks.push({ w: this.table_width+kerf, h: this.table_depth+kerf, id: 'shelf' + shelf, label: String.fromCharCode(67+shelf) });
+            message.dimensions.push({ dimension: this.shelf_heights[i].height-4.25, id: 'shelf' + shelf, label: Array(shelf+1).join("I"), description: 'Align the strong ties for shelf ' + shelf + ' so that the bottom of each 2x4 is at this height.' });
+        }
     }
-    console.log(blocks);
 
     var attempts = 0;
     var total_attempts = blocks.length;
