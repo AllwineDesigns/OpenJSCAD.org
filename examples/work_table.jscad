@@ -112,9 +112,9 @@ var WorkTable = function(params) {
         materials: {
             '2x4': cutlist,
             'plywood': [],
-            'strong_ties': [],
-            'screws1.5': 0,
-            'screws1': 0
+            'strong_ties': this.shelf_heights.length*4,
+            'screws1.5': this.shelf_heights.length*(2*Math.floor(this.table_width/12)+2*Math.floor(this.table_depth/12)),
+            'screws1.25': this.shelf_heights.length*4*12
         },
         dimensions: []
     };
