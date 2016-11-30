@@ -16,7 +16,9 @@ function getParameterDefinitions() {
     { name: 'shelf2_height', caption: 'Shelf 2 Height', type: 'float', initial: 26.25 },
     { name: 'shelf3_height', caption: 'Shelf 3 Height', type: 'float', initial: 0 },
     { name: 'shelf4_height', caption: 'Shelf 4 Height', type: 'float', initial: 0 },
-    { name: 'shelf5_height', caption: 'Shelf 5 Height', type: 'float', initial: 0 }
+    { name: 'shelf5_height', caption: 'Shelf 5 Height', type: 'float', initial: 0 },
+    { name: 'shelf6_height', caption: 'Shelf 6 Height', type: 'float', initial: 0 },
+    { name: 'shelf7_height', caption: 'Shelf 7 Height', type: 'float', initial: 0 }
   ];
 }
 
@@ -50,6 +52,12 @@ var WorkTable = function(params) {
     }
     if(params.shelf5_height > 0) {
         shelf_heights.push({ height: params.shelf5_height, shelf: "5" });
+    }
+    if(params.shelf6_height > 0) {
+        shelf_heights.push({ height: params.shelf6_height, shelf: "6" });
+    }
+    if(params.shelf7_height > 0) {
+        shelf_heights.push({ height: params.shelf7_height, shelf: "7" });
     }
 
     shelf_heights.sort(function(a,b) {
