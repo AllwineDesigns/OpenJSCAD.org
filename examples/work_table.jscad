@@ -1973,14 +1973,14 @@ WorkTable.prototype.checkErrors = function() {
     if(this.table_width > 96) {
         throw new Error("Table width maximum is 96.");
     }
-    if(this.table_width < 12) {
-        throw new Error("Table width minimum is 12.");
+    if(this.table_width < 11) {
+        throw new Error("Table width minimum is 11.");
     }
     if(this.table_depth > 48) {
         throw new Error("Table depth maximum is 48.");
     }
-    if(this.table_depth < 12) {
-        throw new Error("Table depth minimum is 12.");
+    if(this.table_depth < 11) {
+        throw new Error("Table depth minimum is 11.");
     }
 
     if(this.shelf_heights[0].shelf != "top") {
@@ -1988,6 +1988,9 @@ WorkTable.prototype.checkErrors = function() {
     }
 
     for(var i = 1; i < this.shelf_heights.length; i++) {
+        if(this.shelf_heights[i].height < 6.5) {
+            throw new Error("Shelf " + this.shelf_heights[i].shelf + " must be at least 6.5\" tall");
+        }
         if(this.shelf_heights[i].height > this.shelf_heights[i-1].height-(this.plywood_thickness+this.twobyfour_width)) {
             if(this.shelf_heights[i-1].shelf == "top") {
                 throw new Error("Shelf " + this.shelf_heights[i].shelf + " would interfere with the top of the table. Make sure shelves are more than " + (this.plywood_thickness+this.twobyfour_width) + " inches apart.");
