@@ -4,6 +4,9 @@
 // description: a work table
 // file       : work_table.jscad
 
+include('greedy_stock_problem.jscad');
+include('packer.js');
+
 function getParameterDefinitions() {
   return [
     { name: 'width', caption: 'Table Width', type: 'float', initial: 36 },
@@ -67,31 +70,86 @@ var WorkTable = function(params) {
 
     this.checkErrors();
 
+    var cuts2x4 = [
+        { 
+            cut_length: this.xsupport_length,
+            count: this.shelf_heights.length*2,
+            id: 'xsupport'
+        },
+        { 
+            cut_length: this.ysupport_length,
+            count: this.shelf_heights.length*2,
+            id: 'ysupport'
+        },
+        { 
+            cut_length: this.leg_length,
+            count: 4,
+            id: 'leg'
+        }
+    ];
+    console.log("here");
+    var order = new CuttingStockOrder(cuts2x4, 96);
+    console.log("asdf");
+    var cutlist = order.cutlist;
+    var labels = {
+        xsupport: 'B',
+        ysupport: 'C',
+        leg: 'A'
+    };
+    for(var i = 0; i < cutlist.length; i++) {
+        for(var j = 0; j < cutlist[i].length; j++) {
+            cutlist[i][j].label = labels[cutlist[i][j].id];
+        }
+    }
+
     var message = {
         materials: {
-            '2x4': [
-                { 
-                    cutLength: this.xsupport_length,
-                    count: this.shelf_heights.length*2
-                },
-                { 
-                    cutLength: this.ysupport_length,
-                    count: this.shelf_heights.length*2
-                },
-                { 
-                    cutLength: this.leg_length,
-                    count: 4
-                },
-            ],
-            'plywood': [
-                {
-                    cutWidth: this.table_width,
-                    cutDepth: this.table_depth,
-                    count: this.shelf_heights.length
-                }
-            ]
+            '2x4': cutlist,
+            'plywood': [],
+            'strong_ties': [],
+            'screws1.5': 0,
+            'screws1': 0
         }
     };
+
+    var kerf = .125;
+
+    var blocks = [ ];
+
+    for(var i = 0; i < this.shelf_heights.length; i++) {
+        blocks.push({ w: this.table_width+kerf, h: this.table_depth+kerf, id: 'shelf' + i, label: String.fromCharCode(68+i) });
+    }
+    console.log(blocks);
+
+    var attempts = 0;
+    var total_attempts = blocks.length;
+    while(blocks.length > 0 && attempts < total_attempts) {
+        var packer = new Packer(96+kerf, 48+kerf);
+        var sheet = [];
+        packer.fit(blocks);
+
+        var did_not_fit = [];
+
+        for(var n = 0; n < blocks.length; n++) {
+            var block = blocks[n];
+            if(block.fit) {
+                sheet.push({ w: block.w-kerf, h: block.h-kerf, x: block.fit.x, y: block.fit.y, id: block.id, label: block.label });
+            } else {
+                did_not_fit.push(block);
+            }
+        }
+
+        blocks = did_not_fit;
+        message.materials.plywood.push(sheet);
+        attempts++;
+    }
+
+    if(blocks.length > 0) {
+        console.log("too many attempts");
+        console.log(blocks);
+    }
+
+    console.log(message);
 
     postMessage({ cmd: 'windowMessage', message: message });
 
