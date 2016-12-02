@@ -5,10 +5,80 @@
 
 // This is a utility library that can be included in other jscad files so that you can calculate material lists.
 
+// stockLength - length of material from store
+// cuts - array of floating point lengths that need to be cut from our stock
+// kerf - width of the saw blade used to make the cuts
+var CuttingStockPatterns = function(stockLength, cuts, kerf) {
+    if(kerf === undefined) {
+        kerf = .125;
+    }
+
+    this.seen = {};
+    this.patterns = [];
+    this.cuts = cuts.slice(0);
+
+    var that = this;
+
+    var addPattern = function(pattern) {
+        var hash = pattern.getHashString();
+        if(!that.seen[hash]) {
+            that.seen[hash] = true;
+            that.patterns.push(pattern);
+        }
+    };
+
+    var findPatterns = function(pattern) {
+        for(var i = 0; i < that.cuts.length; i++) {
+            if(that.cuts[i] <= pattern.waste) {
+                var p = pattern.clone();
+                p.addCut(that.cuts[i], kerf);
+                addPattern(p);
+                findPatterns(p);
+            }
+        }
+    };
+
+
+    findPatterns(new CuttingStockPattern(stockLength));
+};
+
+CuttingStockPatterns.prototype.getPatterns = function() {
+    var patterns = [];
+    for(var i = 0; i < this.patterns.length; i++) {
+        patterns.push(this.patterns[i]);
+    }
+
+    return patterns;
+}
+
 var CuttingStockPattern = function(stockLength) {
     this.waste = stockLength;
     this.cuts = {};
 };
+
+CuttingStockPattern.prototype.clone = function() {
+    var obj = new CuttingStockPattern();
+    obj.waste = this.waste;
+    obj.cuts = {};
+    for(var k in this.cuts) {
+        obj.cuts[k] = this.cuts[k];
+    }
+
+    return obj;
+}
+
+CuttingStockPattern.prototype.getHashString = function() {
+    var hash = "";
+    var keys = Object.keys(this.cuts);
+    keys.sort();
+    for(var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        hash += k + "_";
+        hash += this.cuts[k]+ ":";
+    }
+
+    return hash;
+}
 
 CuttingStockPattern.prototype.addCut = function(cut, kerf) {
     if(this.cuts[cut] === undefined) {
@@ -43,8 +113,13 @@ CuttingStockPattern.prototype.getBasicObject = function() {
 //    { cut_length: 96, count: 2, id: 'beams' }
 // ]
 // ids are assumed to be unique
-var CuttingStockOrder = function(materials, stockLength, kerf) {
+var CuttingStockOrder = function(materials, stockLength, kerf, fillMode) {
+    if(fillMode === undefined) {
+        fillMode = "MAX_LENGTH";
+    }
     var quantities = {};
+
+    this.lengths = [];
 
     for(var i = 0; i < materials.length; i++) {
         var material = materials[i];
@@ -52,11 +127,13 @@ var CuttingStockOrder = function(materials, stockLength, kerf) {
         if(quantities.hasOwnProperty(material.cut_length)) {
             quantities[material.cut_length] += material.count;
         } else {
+            this.lengths.push(material.cut_length);
             quantities[material.cut_length] = material.count;
         }
     }
 
-    kerf = kerf === undefined ? .125 : kerf;
+    this.kerf = kerf === undefined ? .125 : kerf;
+    kerf = this.kerf;
 
     this.stockLength = stockLength;
     this.neededQuantities = {};
@@ -73,32 +150,13 @@ var CuttingStockOrder = function(materials, stockLength, kerf) {
     this.stockCount = 0;
     this.wastePct = 0;
 
-    while(!this.complete) {
-        var pattern = new CuttingStockPattern(this.stockLength);
-        
-        var cuts = this.getNeededCuts();
-        var keys = Object.keys(cuts);
-        for(var i = 0; i < keys.length; i++) {
-            keys[i] = parseFloat(keys[i]);
-        }
-        keys.sort(function(a,b) {
-            return b-a;
-        });
-
-        for(var i = 0; i < keys.length; i++) {
-            var cutLength = keys[i];
-            while(cutLength <= pattern.waste && cuts[cutLength] > 0) {
-                pattern.addCut(cutLength, kerf);
-                cuts[cutLength]--;
-            }
-        }
-
-        var count = this.calculateCount(pattern);
-        this.addPattern(pattern, count);
+    if(fillMode == "MAX_LENGTH") {
+        this.greedyFillByMaxLength();
+    } else {
+        this.greedyFillByMinWaste();
     }
 
     var length2id = {};
-
     for(var i = 0; i < materials.length; i++) {
         var material = materials[i];
 
@@ -113,7 +171,6 @@ var CuttingStockOrder = function(materials, stockLength, kerf) {
     }
 
     this.cutlist = [];
-
     for(var i = 0; i < this.patterns.length; i++) {
         var pattern = this.patterns[i];
         for(var j = 0; j < pattern.count; j++) {
@@ -132,6 +189,49 @@ var CuttingStockOrder = function(materials, stockLength, kerf) {
 
             this.cutlist.push(cuts);
         }
+    }
+};
+
+CuttingStockOrder.prototype.greedyFillByMinWaste = function() {
+    var patterns = new CuttingStockPatterns(96, this.lengths);
+    patterns.patterns.sort(function(a,b) {
+        return a.waste - b.waste;
+    });
+
+    while(!this.complete) {
+        this.addPattern(patterns.patterns[0], 1);
+        for(var i = 0; i < patterns.patterns.length; i++) {
+            if(this.calculateCount(patterns.patterns[i]) == 0) {
+                patterns.patterns.splice(i, 1);
+                i--;
+            }
+        }
+    }
+};
+
+CuttingStockOrder.prototype.greedyFillByMaxLength = function() {
+    while(!this.complete) {
+        var pattern = new CuttingStockPattern(this.stockLength);
+        
+        var cuts = this.getNeededCuts();
+        var keys = Object.keys(cuts);
+        for(var i = 0; i < keys.length; i++) {
+            keys[i] = parseFloat(keys[i]);
+        }
+        keys.sort(function(a,b) {
+            return b-a;
+        });
+
+        for(var i = 0; i < keys.length; i++) {
+            var cutLength = keys[i];
+            while(cutLength <= pattern.waste && cuts[cutLength] > 0) {
+                pattern.addCut(cutLength, this.kerf);
+                cuts[cutLength]--;
+            }
+        }
+
+        var count = this.calculateCount(pattern);
+        this.addPattern(pattern, count);
     }
 };
 

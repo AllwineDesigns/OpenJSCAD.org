@@ -93,7 +93,13 @@ var WorkBench = function(params) {
         }
     }
 
-    var order = new CuttingStockOrder(materials, 96);
+    var order = new CuttingStockOrder(materials, 96, .125, "MAX_LENGTH");
+    var order2 = new CuttingStockOrder(materials, 96, .125, "MIN_WASTE"); 
+    console.log(order2);
+
+    if(order2.cutlist.length < order.cutlist.length) {
+        order = order2;
+    }
 
     var cutlist = order.cutlist;
     var labels = {

@@ -96,6 +96,11 @@ var WorkTable = function(params) {
         }
     ];
     var order = new CuttingStockOrder(cuts2x4, 96);
+    var order2 = new CuttingStockOrder(cuts2x4, 96, .125, "MIN_WASTE"); 
+    if(order2.cutlist.length < order.cutlist.length) {
+        order = order2;
+    }
+
     var cutlist = order.cutlist;
     var labels = {
         xsupport: 'B',
