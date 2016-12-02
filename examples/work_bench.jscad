@@ -206,16 +206,18 @@ WorkBench.prototype.checkErrors = function() {
         throw new Error("Table depth minimum is 12.");
     }
 
-    if(this.backboard_shelf_height < this.table_height+this.plywood_thickness+this.twobyfour_width+this.backboard_gap) {
-        throw new Error("Shelf height must be at least table height plus " + (this.plywood_thickness+this.twobyfour_width+this.backboard_gap));
-    }
+    if(this.backboard) {
+        if(this.backboard_shelf_height < this.table_height+this.plywood_thickness+this.twobyfour_width+this.backboard_gap) {
+            throw new Error("Shelf height must be at least table height plus " + (this.plywood_thickness+this.twobyfour_width+this.backboard_gap));
+        }
 
-    if(this.backboard_pegboard_height > 48) {
-        throw new Error("This configuration is not possible because the peg board height would exceed the maximum of 48\". Adjust your table height and/or shelf height.");
-    }
+        if(this.backboard_pegboard_height > 48) {
+            throw new Error("This configuration is not possible because the peg board height would exceed the maximum of 48\". Adjust your table height and/or shelf height.");
+        }
 
-    if(this.backboard_shelf_depth > 48-this.twobyfour_width) {
-        throw new Error("The shelf depth maximum is " + (48-this.twobyfour_width));
+        if(this.backboard_shelf_depth > 48-this.twobyfour_width) {
+            throw new Error("The shelf depth maximum is " + (48-this.twobyfour_width));
+        }
     }
 }
 

@@ -199,7 +199,7 @@ CuttingStockOrder.prototype.greedyFillByMinWaste = function() {
     });
 
     while(!this.complete) {
-        this.addPattern(patterns.patterns[0], 1);
+        this.addPattern(patterns.patterns[0], this.calculateCount(patterns.patterns[0]));
         for(var i = 0; i < patterns.patterns.length; i++) {
             if(this.calculateCount(patterns.patterns[i]) == 0) {
                 patterns.patterns.splice(i, 1);
