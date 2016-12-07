@@ -132,10 +132,10 @@ var WorkTable = function(params) {
         var shelf = this.shelf_heights.length-i;
         if(i == 0) {
             blocks.push({ w: this.table_width+kerf, h: this.table_depth+kerf, id: 'table_top', label: String.fromCharCode(67+shelf) });
-            message.dimensions.push({ dimension: this.shelf_heights[i].height-4.25, id: 'table_top', label: 'H' + shelf, description: 'Align the strong ties for the table top so that the bottom of each 2x4 is at this height.' });
+            message.dimensions.push({ dimension: this.shelf_heights[i].height-.75, id: 'table_top', label: 'H' + shelf, description: 'Align the strong ties for the table top so that the top of each 2x4 is at this height.' });
         } else {
             blocks.push({ w: this.table_width+kerf, h: this.table_depth+kerf, id: 'shelf' + shelf, label: String.fromCharCode(67+shelf) });
-            message.dimensions.push({ dimension: this.shelf_heights[i].height-4.25, id: 'shelf' + shelf, label: 'H' + shelf, description: 'Align the strong ties for shelf ' + shelf + ' so that the bottom of each 2x4 is at this height.' });
+            message.dimensions.push({ dimension: this.shelf_heights[i].height-.75, id: 'shelf' + shelf, label: 'H' + shelf, description: 'Align the strong ties for shelf ' + shelf + ' so that the top of each 2x4 is at this height.' });
         }
     }
 
