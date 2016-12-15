@@ -15,6 +15,7 @@ function getParameterDefinitions() {
     { name: 'backboard', caption: 'Backboard', type: 'checkbox', checked: true },
     { name: 'backboard_shelf_height', caption: 'Shelf Height', type: 'float', initial: 74.75 },
     { name: 'backboard_shelf_depth', caption: 'Shelf Depth', type: 'float', initial: 11.875 },
+    { name: 'overhang', caption: 'Overhang', type: 'float', initial: 0 }
   ];
 }
 
@@ -30,6 +31,8 @@ var WorkBench = function(params) {
     this.table_height = params.height;
     this.table_width = params.width;
     this.table_depth = params.depth;
+
+    this.plywood_depth = this.table_depth+params.overhang;
 
     this.backboard = params.backboard;
     this.backboard_shelf_height = params.backboard_shelf_height;
@@ -144,7 +147,7 @@ var WorkBench = function(params) {
     var kerf = .125;
 
     var blocks = [
-        { w: this.table_width+kerf, h: this.table_depth+kerf, id: 'table_top', label: 'C' }
+        { w: this.table_width+kerf, h: this.plywood_depth+kerf, id: 'table_top', label: 'C' }
     ];
 
     if(this.backboard && this.backboard_shelf_depth > 0) {
@@ -199,8 +202,8 @@ WorkBench.prototype.checkErrors = function() {
     if(this.table_width < 13) {
         throw new Error("Table width minimum is 13.");
     }
-    if(this.table_depth > 48) {
-        throw new Error("Table depth maximum is 48.");
+    if(this.plywood_depth > 48) {
+        throw new Error("Table depth+overhang maximum is 48.");
     }
     if(this.table_depth < 12) {
         throw new Error("Table depth minimum is 12.");
@@ -305,7 +308,7 @@ WorkBench.prototype.TableTop = function() {
     this.HorizontalTwoByFour(this.table_width).translate([0,this.table_depth-this.twobyfour_thickness,this.leg_length-this.twobyfour_width]),
     this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.twobyfour_thickness, this.twobyfour_thickness, this.leg_length-this.twobyfour_width]),
     this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.table_width, this.twobyfour_thickness, this.leg_length-this.twobyfour_width]),
-    cube([this.table_width, this.table_depth, this.plywood_thickness]).translate([0,0,this.leg_length])
+    cube([this.table_width, this.plywood_depth, this.plywood_thickness]).translate([0,-(this.plywood_depth-this.table_depth),this.leg_length])
     ];
 
     for(var i = 1; i < this.numYJoists-1; i++) {
