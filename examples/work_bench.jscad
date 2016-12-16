@@ -32,7 +32,7 @@ var WorkBench = function(params) {
     this.table_width = params.width;
     this.table_depth = params.depth;
 
-    this.plywood_depth = this.table_depth+params.overhang;
+    this.overhang = params.overhang;
 
     this.backboard = params.backboard;
     this.backboard_shelf_height = params.backboard_shelf_height;
@@ -60,13 +60,13 @@ var WorkBench = function(params) {
     }
 
     this.leg_length = this.table_height-this.plywood_thickness;
-    this.cross_support_length = Math.round(8*(sqrt(2)*.5*(this.table_depth-4*this.twobyfour_thickness)+this.twobyfour_width))/8;
+    this.cross_support_length = Math.round(8*(sqrt(2)*.5*(this.table_depth-this.overhang-4*this.twobyfour_thickness)+this.twobyfour_width))/8;
     this.support_height = this.table_height-this.plywood_thickness-this.cross_support_length*Math.sqrt(2)*.5;
 
-    this.support_length = this.table_depth-4*this.twobyfour_thickness;
+    this.support_length = this.table_depth-this.overhang-4*this.twobyfour_thickness;
     this.oversize = .1;
 
-    this.yjoist_length = this.table_depth-2*this.twobyfour_thickness;
+    this.yjoist_length = this.table_depth-this.overhang-2*this.twobyfour_thickness;
 
     this.numYJoists = Math.ceil((this.table_width-this.twobyfour_thickness)/24)+1;
     this.spaceBetween = (this.table_width-this.twobyfour_thickness)/(this.numYJoists-1);
@@ -147,7 +147,7 @@ var WorkBench = function(params) {
     var kerf = .125;
 
     var blocks = [
-        { w: this.table_width+kerf, h: this.plywood_depth+kerf, id: 'table_top', label: 'C' }
+        { w: this.table_width+kerf, h: this.table_depth+kerf, id: 'table_top', label: 'C' }
     ];
 
     if(this.backboard && this.backboard_shelf_depth > 0) {
@@ -202,11 +202,11 @@ WorkBench.prototype.checkErrors = function() {
     if(this.table_width < 13) {
         throw new Error("Table width minimum is 13.");
     }
-    if(this.plywood_depth > 48) {
-        throw new Error("Table depth+overhang maximum is 48.");
+    if(this.table_depth > 48) {
+        throw new Error("Table depth maximum is 48.");
     }
-    if(this.table_depth < 12) {
-        throw new Error("Table depth minimum is 12.");
+    if(this.table_depth-this.overhang < 12) {
+        throw new Error("Table depth minus overhang minimum is 12.");
     }
 
     if(this.backboard) {
@@ -272,12 +272,12 @@ WorkBench.prototype.Backboard = function() {
 
 WorkBench.prototype.Supports = function() {
     return [ 
-    this.HorizontalTwoByFour(this.support_length).rotateZ(90).rotateY(90).translate([2*this.twobyfour_thickness, 2*this.twobyfour_thickness, this.support_height-this.twobyfour_thickness]),
+    this.HorizontalTwoByFour(this.support_length).rotateZ(90).rotateY(90).translate([2*this.twobyfour_thickness, 2*this.twobyfour_thickness+this.overhang, this.support_height-this.twobyfour_thickness]),
+    this.HorizontalTwoByFour(this.support_length).rotateZ(90).rotateY(90).translate([this.table_width-this.twobyfour_width-2*this.twobyfour_thickness, 2*this.twobyfour_thickness+this.overhang, this.support_height-this.twobyfour_thickness]),
     this.FourtyFiveTwoByFour(this.cross_support_length).translate([2*this.twobyfour_thickness,this.table_depth-2*this.twobyfour_thickness, this.table_height-this.plywood_thickness]),
-    this.FourtyFiveTwoByFour(this.cross_support_length).rotateZ(180).translate([4*this.twobyfour_thickness,2*this.twobyfour_thickness, this.table_height-this.plywood_thickness]),
-    this.HorizontalTwoByFour(this.support_length).rotateZ(90).rotateY(90).translate([this.table_width-this.twobyfour_width-2*this.twobyfour_thickness, 2*this.twobyfour_thickness, this.support_height-this.twobyfour_thickness]),
+    this.FourtyFiveTwoByFour(this.cross_support_length).rotateZ(180).translate([4*this.twobyfour_thickness,2*this.twobyfour_thickness+this.overhang, this.table_height-this.plywood_thickness]),
     this.FourtyFiveTwoByFour(this.cross_support_length).translate([this.table_width-3*this.twobyfour_thickness,this.table_depth-2*this.twobyfour_thickness, this.table_height-this.plywood_thickness]),
-    this.FourtyFiveTwoByFour(this.cross_support_length).rotateZ(180).translate([this.table_width-3*this.twobyfour_thickness,2*this.twobyfour_thickness, this.table_height-this.plywood_thickness])
+    this.FourtyFiveTwoByFour(this.cross_support_length).rotateZ(180).translate([this.table_width-3*this.twobyfour_thickness,2*this.twobyfour_thickness+this.overhang, this.table_height-this.plywood_thickness])
     ];
 }
 
@@ -287,7 +287,7 @@ WorkBench.prototype.Leg = function() {
 }
 
 WorkBench.prototype.LeftFrontLeg = function() {
-    return [ this.Leg().translate([this.twobyfour_thickness, this.twobyfour_thickness,0]), this.Leg().rotateZ(-90).translate([2*this.twobyfour_thickness, 2*this.twobyfour_thickness, 0]) ];
+    return [ this.Leg().translate([this.twobyfour_thickness, this.twobyfour_thickness+this.overhang,0]), this.Leg().rotateZ(-90).translate([2*this.twobyfour_thickness, 2*this.twobyfour_thickness+this.overhang, 0]) ];
 }
 
 WorkBench.prototype.LeftBackLeg = function() {
@@ -295,7 +295,7 @@ WorkBench.prototype.LeftBackLeg = function() {
 }
 
 WorkBench.prototype.RightFrontLeg = function() {
-    return [ this.Leg().translate([this.table_width-2*this.twobyfour_thickness, this.twobyfour_thickness, 0]), this.Leg().rotateZ(-90).translate([this.table_width-2*this.twobyfour_thickness-this.twobyfour_width, 2*this.twobyfour_thickness, 0])  ];
+    return [ this.Leg().translate([this.table_width-2*this.twobyfour_thickness, this.twobyfour_thickness+this.overhang, 0]), this.Leg().rotateZ(-90).translate([this.table_width-2*this.twobyfour_thickness-this.twobyfour_width, 2*this.twobyfour_thickness+this.overhang, 0])  ];
 }
 
 WorkBench.prototype.RightBackLeg = function() {
@@ -304,16 +304,16 @@ WorkBench.prototype.RightBackLeg = function() {
 
 WorkBench.prototype.TableTop = function() {
     var parts =  [ 
-    this.HorizontalTwoByFour(this.table_width).translate([0,0,this.leg_length-this.twobyfour_width]), 
+    this.HorizontalTwoByFour(this.table_width).translate([0,this.overhang,this.leg_length-this.twobyfour_width]), 
     this.HorizontalTwoByFour(this.table_width).translate([0,this.table_depth-this.twobyfour_thickness,this.leg_length-this.twobyfour_width]),
-    this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.twobyfour_thickness, this.twobyfour_thickness, this.leg_length-this.twobyfour_width]),
-    this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.table_width, this.twobyfour_thickness, this.leg_length-this.twobyfour_width]),
-    cube([this.table_width, this.plywood_depth, this.plywood_thickness]).translate([0,-(this.plywood_depth-this.table_depth),this.leg_length])
+    this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.twobyfour_thickness, this.twobyfour_thickness+this.overhang, this.leg_length-this.twobyfour_width]),
+    this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.table_width, this.twobyfour_thickness+this.overhang, this.leg_length-this.twobyfour_width]),
+    cube([this.table_width, this.table_depth, this.plywood_thickness]).translate([0,0,this.leg_length])
     ];
 
     for(var i = 1; i < this.numYJoists-1; i++) {
         var x = i*(this.table_width-this.twobyfour_thickness)/(this.numYJoists-1);
-        parts.push(this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.twobyfour_thickness+x, this.twobyfour_thickness, this.leg_length-this.twobyfour_width]));
+        parts.push(this.HorizontalTwoByFour(this.yjoist_length).rotateZ(90).translate([this.twobyfour_thickness+x, this.twobyfour_thickness+this.overhang, this.leg_length-this.twobyfour_width]));
     }
 
     return parts;
