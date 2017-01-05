@@ -104,6 +104,9 @@ $(document).ready(function() {
   });
 
 var ex = [
+  { file:'work_bench.jscad', title: 'Work Bench', spacing: true },
+  { file:'work_table.jscad', title: 'Work Table' },
+
   { file:'logo.jscad', title: 'OpenJSCAD.org Logo' },
   { file:'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF' },
 
