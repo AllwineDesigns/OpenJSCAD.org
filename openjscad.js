@@ -1306,7 +1306,7 @@ OpenJsCad.Processor.prototype = {
       },
       function(msg) {
           try {
-              window.top.postMessage(msg, "http://www.allwinedesigns.com");
+              window.top.postMessage(msg, "https://www.allwinedesigns.com");
           } catch(err) {
               console.log(msg);
           }
