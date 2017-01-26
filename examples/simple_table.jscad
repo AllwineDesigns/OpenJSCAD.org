@@ -151,8 +151,8 @@ var SimpleTable = function(params) {
             '2x8': cutlist2x8
         },
         dimensions: [
-            { dimension: this.rip_thickness_per_edge, id: 'rip_thickness_per_edge', label: 'I', description: "The amount to cut off each side of every 2x8. You could double this number and make a single cut, but cutting from each edge will eliminate the rounded edges from both sides rather than just one." },
-            { dimension: this.rip_thickness, id: 'rip_thickness', label: 'II', description: "If you'd rather not cut every board, and don't mind a single board being a different width than the rest of them, you can cut this amount off of a single 2x8 to get your desired depth." },
+            { dimension: this.rip_thickness_per_edge, id: 'rip_thickness_per_edge', label: 'I', description: "This will be 0 unless you check 'Use Rip Cuts'. The amount to cut off each side of every 2x8. You could double this number and make a single cut, but cutting from each edge will eliminate the rounded edges from both sides rather than just one." },
+            { dimension: this.rip_thickness, id: 'rip_thickness', label: 'II', description: "This will be 0 unless you check 'Use Rip Cuts'. If you'd rather not cut every board, and don't mind a single board being a different width than the rest of them, you can cut this amount off of a single 2x8 to get your desired depth." },
             { dimension: this.table_depth, id: 'table_depth', label: 'III', description: "The actual depth of the table. This will only match what you specified in the widget above if you allow rip cuts, or pick a number that is evenly divided by 7.25." }
         ]
     };
