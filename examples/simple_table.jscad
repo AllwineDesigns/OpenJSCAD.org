@@ -13,6 +13,9 @@ function getParameterDefinitions() {
     { name: 'height', caption: 'Table Height', type: 'float', initial: 30 },
     { name: 'depth', caption: 'Table Depth', type: 'float', initial: 36.25 },
     { name: 'overhang', caption: 'Overhang', type: 'float', initial: 2.5 },
+//    { name: 'table_top_joint', caption: 'Table Top Joint Type', type: 'choice', values: [ 'pocket_screws', 'dowel_pins', 'glue' ], captions: ['Pocket Screws', 'Dowel Pins', 'Glue Only' ], initial: 'glue' },
+//    { name: 'joint_type', caption: 'Apron Joint Type', type: 'choice', values: [ 'pocket_screws', 'dowel_pins', 'mortise_and_tenon' ], captions: ['Pocket Screws', 'Dowel Pins', 'Mortise and Tenon' ], initial: 'dowel_pins' },
+//    { name: 'attachment', caption: 'Table Top Attachment', type: 'choice', values: [ 'pocket_screws', 'metal_clips' ], captions: ['Pocket Screws', 'Metal Clips' ], initial: 'metal_clips' },
     { name: 'rip_cuts', caption: 'Use Rip Cuts', type: 'checkbox', checked: false },
     { name: 'use_tenons', caption: 'Use Tenons', type: 'checkbox', checked: false }
   ];
@@ -31,7 +34,14 @@ var SimpleTable = function(params) {
     this.table_width = params.width;
     this.overhang = params.overhang;
     this.rip_cuts = params.rip_cuts;
-    this.use_tenons = params.use_tenons;
+
+    this.joint_type = params.use_tenons ? 'mortise_and_tenon' : 'dowel_pins';
+    this.table_top_joint = 'dowel_pins';
+    this.attachment = 'metal_clips';
+
+//    this.joint_type = params.joint_type;
+//    this.table_top_joint = params.table_top_joint;
+//    this.attachment = params.attachment;
 
     this.apron_thickness = 1.5;
     this.apron_width = 3.5;
@@ -71,12 +81,12 @@ var SimpleTable = function(params) {
 
     var cuts2x4 = [
         { 
-            cut_length: this.x_apron_length+(this.use_tenons ? 5 : 0),
+            cut_length: this.x_apron_length+(this.joint_type == 'mortise_and_tenon' ? 5 : 0),
             count: 2,
             id: 'x_apron'
         },
         { 
-            cut_length: this.y_apron_length+(this.use_tenons ? 5 : 0),
+            cut_length: this.y_apron_length+(this.joint_type == 'mortise_and_tenon' ? 5 : 0),
             count: 2,
             id: 'y_apron'
         }
@@ -148,14 +158,39 @@ var SimpleTable = function(params) {
         materials: {
             '2x4': cutlist2x4,
             '4x4': cutlist4x4,
-            '2x8': cutlist2x8
+            '2x8': cutlist2x8,
+            'dowel_pins': 0,
+            'pocket_screws': 0,
+            'metal_clips': 0
+
         },
         dimensions: [
-            { dimension: this.rip_thickness_per_edge, id: 'rip_thickness_per_edge', label: 'I', description: "This will be 0 unless you check 'Use Rip Cuts'. The amount to cut off each side of every 2x8. You could double this number and make a single cut, but cutting from each edge will eliminate the rounded edges from both sides rather than just one." },
-            { dimension: this.rip_thickness, id: 'rip_thickness', label: 'II', description: "This will be 0 unless you check 'Use Rip Cuts'. If you'd rather not cut every board, and don't mind a single board being a different width than the rest of them, you can cut this amount off of a single 2x8 to get your desired depth." },
-            { dimension: this.table_depth, id: 'table_depth', label: 'III', description: "The actual depth of the table. This will only match what you specified in the widget above if you allow rip cuts, or pick a number that is evenly divided by 7.25." }
+            { dimension: this.table_depth, id: 'table_depth', label: 'I', description: "The actual depth of the table. This will only match what you specified in the widget above if you allow rip cuts, or pick a number that is evenly divided by 7.25." }
         ]
     };
+
+    if(this.attachment == 'pocket_screws') {
+        message.materials.pocket_screws += 2*Math.floor(this.y_apron_length/8);
+    } else if(this.attachment == 'metal_clips') {
+        message.materials.metal_clips += 2*Math.max(Math.floor(this.y_apron_length/8), 2);
+    }
+
+    if(this.table_top_joint == 'dowel_pins') {
+        message.materials.dowel_pins += Math.floor(this.table_width/8);
+    } else if(this.table_top_joint == 'pocket_screws') {
+        message.materials.pocket_screws += Math.floor(this.table_width/8);
+    }
+
+    if(this.joint_type == 'dowel_pins') {
+        message.materials.dowel_pins += 24;
+    } else if(this.joint_type == 'pocket_screws') {
+        message.materials.pocket_screws += 16;
+    }
+
+    if(this.rip_cuts) {
+        message.dimensions.push({ dimension: this.rip_thickness_per_edge, id: 'rip_thickness_per_edge', label: 'II', description: "The amount to cut off each side of every 2x8. You could double this number and make a single cut, but cutting from each edge will eliminate the rounded edges from both sides rather than just one." });
+        message.dimensions.push({ dimension: this.rip_thickness, id: 'rip_thickness', label: 'III', description: "If you'd rather not cut every board, and don't mind a single board being a different width than the rest of them, you can cut this amount off of a single 2x8 to get your desired depth." });
+    }
 
     var kerf = .125;
 
