@@ -2,7 +2,7 @@ function getParameterDefinitions() {
     return [
         { name: 'inner_diameter', caption: 'Inner Diameter', type: 'float', initial: .25 },
         { name: 'thickness', caption: 'Thickness', type: 'float', initial: .125 }, 
-        { name: 'length', caption: 'Connector Length', type: 'float', initial: .25 },
+        { name: 'length', caption: 'Length', type: 'float', initial: .25 },
         { name: 'hole_depth', caption: 'Hole Depth', type: 'float', initial: .2 },
         { name: 'number', caption: 'Number', type: 'text', initial: "1" },
         { name: 'dowel_angle', caption: 'Dowel Angle', type: 'float', initial: 90 },
