@@ -872,7 +872,7 @@ OpenJsCad.Processor = function(containerdiv, options) {
 // the default options
   this.opts = {
     debug: false,
-    libraries: ['csg.js','formats.js','openjscad.js','openscad.js'],
+    libraries: ['hull3d.js', 'csg.js','formats.js','openjscad.js','openscad.js'],
     openJsCadPath: '',
     useAsync: true,
     useSync:  true,

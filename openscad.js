@@ -707,156 +707,200 @@ function hull() {
    if(a[0].length) a = a[0];
    var done = [];
 
-   for(var i=0; i<a.length; i++) {              // extract all points of the CAG in the argument list
+   var doHull3D = false;
+   for(var i = 0; i < a.length; i++) {
       var cag = a[i];
       if(!(cag instanceof CAG)) {
-         throw("ERROR: hull() accepts only 2D forms / CAG");
-         return;
-      }
-      for(var j=0; j<cag.sides.length; j++) {
-         var x = cag.sides[j].vertex0.pos.x;
-         var y = cag.sides[j].vertex0.pos.y;
-         if(done[''+x+','+y])  // avoid some coord to appear multiple times
-            continue;
-         pts.push({ x:x, y:y });
-         done[''+x+','+y]++;
-         //echo(x,y);
-      }
+          doHull3D = true;
+      } 
    }
-   //echo(pts.length+" points in",pts);
 
-   // from http://www.psychedelicdevelopment.com/grahamscan/
-   //    see also at https://github.com/bkiers/GrahamScan/blob/master/src/main/cg/GrahamScan.java
-   var ConvexHullPoint = function(i, a, d) {
+    if(doHull3D) {
+       for(var i=0; i<a.length; i++) {
+          var cag = a[i];
+          if(cag instanceof CAG) {
+              for(var j=0; j<cag.sides.length; j++) {
+                 var x = cag.sides[j].vertex0.pos.x;
+                 var y = cag.sides[j].vertex0.pos.y;
+                 if(done[''+x+','+y+",0"])  // avoid some coord to appear multiple times
+                    continue;
+                 pts.push([x,y,0]);
+                 done[''+x+','+y+",0"]++;
+                 //echo(x,y);
+              }
+          } else if(cag instanceof CSG) {
+              var csg = cag;
+              var polygons = csg.toPolygons();
+              for(var j = 0; j < polygons.length; j++) {
+                  var polygon = polygons[j];
+                  for(var k = 0; k < polygon.vertices.length; k++) {
+                     var x = polygon.vertices[k].pos.x;
+                     var y = polygon.vertices[k].pos.y;
+                     var z = polygon.vertices[k].pos.z;
+                     pts.push([x,y,z]);
+                  }
+              }
+          }
+       }
+        var faces = new hull3d(pts);
 
-      this.index = i;
-      this.angle = a;
-      this.distance = d;
-   
-      this.compare = function(p) {
-         if (this.angle<p.angle)
-            return -1;
-         else if (this.angle>p.angle)
-            return 1;
-         else {
-            if (this.distance<p.distance)
-               return -1;
-            else if (this.distance>p.distance)
-               return 1;
-         }
-         return 0;
-      }
-   }
-   
-   var ConvexHull = function() {
-      this.points = null;
-      this.indices = null;
-   
-      this.getIndices = function() {
-         return this.indices;
-      }
-   
-      this.clear = function() {
-         this.indices = null;
-         this.points = null;
-      }
-   
-      this.ccw = function(p1, p2, p3) {
-         var ccw = (this.points[p2].x - this.points[p1].x)*(this.points[p3].y - this.points[p1].y) - 
-                   (this.points[p2].y - this.points[p1].y)*(this.points[p3].x - this.points[p1].x);
-         if(ccw<1e-5)      // we need this, otherwise sorting never ends, see https://github.com/Spiritdude/OpenJSCAD.org/issues/18
-            return 0
-         return ccw;
-      }
-   
-      this.angle = function(o, a) {
-         //return Math.atan((this.points[a].y-this.points[o].y) / (this.points[a].x - this.points[o].x)); 
-         return Math.atan2((this.points[a].y-this.points[o].y), (this.points[a].x - this.points[o].x));
-      }
+        for(var i = 0; i < faces.length; i++) {
+            faces[i].reverse();
+        }
+        var options = {
+            points: pts,
+            polygons: faces
+        };
+        console.log(options);
+        return polyhedron(options);
+    } else {
+       for(var i=0; i<a.length; i++) {
+          var cag = a[i];
+          for(var j=0; j<cag.sides.length; j++) {
+             var x = cag.sides[j].vertex0.pos.x;
+             var y = cag.sides[j].vertex0.pos.y;
+             if(done[''+x+','+y])  // avoid some coord to appear multiple times
+                continue;
+             pts.push({ x:x, y:y });
+             done[''+x+','+y]++;
+             //echo(x,y);
+          }
+       }
+       //echo(pts.length+" points in",pts);
+
+       // from http://www.psychedelicdevelopment.com/grahamscan/
+       //    see also at https://github.com/bkiers/GrahamScan/blob/master/src/main/cg/GrahamScan.java
+       var ConvexHullPoint = function(i, a, d) {
+
+          this.index = i;
+          this.angle = a;
+          this.distance = d;
        
-      this.distance = function(a, b) {
-         return ((this.points[b].x-this.points[a].x)*(this.points[b].x-this.points[a].x)+
-                 (this.points[b].y-this.points[a].y)*(this.points[b].y-this.points[a].y));
-      }
-   
-      this.compute = function(_points) {
-         this.indices=null;
-         if (_points.length<3)
-            return;
-         this.points=_points;
-   
-         // Find the lowest point
-         var min = 0;
-         for(var i = 1; i < this.points.length; i++) {
-            if(this.points[i].y==this.points[min].y) {
-               if(this.points[i].x<this.points[min].x)
-                  min = i;
-            }
-            else if(this.points[i].y<this.points[min].y)
-               min = i;
-         }
-   
-         // Calculate angle and distance from base
-         var al = new Array();
-         var ang = 0.0;
-         var dist = 0.0;
-         for (i = 0; i<this.points.length; i++) {
-            if (i==min)
-               continue;
-            ang = this.angle(min, i);
-            if (ang<0)
-               ang += Math.PI;
-            dist = this.distance(min, i);
-            al.push(new ConvexHullPoint(i, ang, dist));
-         }
-   
-         al.sort(function (a, b) { return a.compare(b); });
-   
-         // Create stack
-         var stack = new Array(this.points.length+1);
-         var j = 2;
-         for(i = 0; i<this.points.length; i++) {
-            if(i==min)
-               continue;
-            stack[j] = al[j-2].index;
-            j++;
-         }
-         stack[0] = stack[this.points.length];
-         stack[1] = min;
-   
-         var tmp;
-         var M = 2;
-         for(i = 3; i<=this.points.length; i++) {
-            while(this.ccw(stack[M-1], stack[M], stack[i]) <= 0)
-               M--;
-            M++;
-            tmp = stack[i];
-            stack[i] = stack[M];
-            stack[M] = tmp;
-         }
-   
-         this.indices = new Array(M);
-         for (i = 0; i<M; i++) {
-            this.indices[i] = stack[i+1];
-         }
-      }
-   }
+          this.compare = function(p) {
+             if (this.angle<p.angle)
+                return -1;
+             else if (this.angle>p.angle)
+                return 1;
+             else {
+                if (this.distance<p.distance)
+                   return -1;
+                else if (this.distance>p.distance)
+                   return 1;
+             }
+             return 0;
+          }
+       }
+       
+       var ConvexHull = function() {
+          this.points = null;
+          this.indices = null;
+       
+          this.getIndices = function() {
+             return this.indices;
+          }
+       
+          this.clear = function() {
+             this.indices = null;
+             this.points = null;
+          }
+       
+          this.ccw = function(p1, p2, p3) {
+             var ccw = (this.points[p2].x - this.points[p1].x)*(this.points[p3].y - this.points[p1].y) - 
+                       (this.points[p2].y - this.points[p1].y)*(this.points[p3].x - this.points[p1].x);
+             if(ccw<1e-5)      // we need this, otherwise sorting never ends, see https://github.com/Spiritdude/OpenJSCAD.org/issues/18
+                return 0
+             return ccw;
+          }
+       
+          this.angle = function(o, a) {
+             //return Math.atan((this.points[a].y-this.points[o].y) / (this.points[a].x - this.points[o].x)); 
+             return Math.atan2((this.points[a].y-this.points[o].y), (this.points[a].x - this.points[o].x));
+          }
+           
+          this.distance = function(a, b) {
+             return ((this.points[b].x-this.points[a].x)*(this.points[b].x-this.points[a].x)+
+                     (this.points[b].y-this.points[a].y)*(this.points[b].y-this.points[a].y));
+          }
+       
+          this.compute = function(_points) {
+             this.indices=null;
+             if (_points.length<3)
+                return;
+             this.points=_points;
+       
+             // Find the lowest point
+             var min = 0;
+             for(var i = 1; i < this.points.length; i++) {
+                if(this.points[i].y==this.points[min].y) {
+                   if(this.points[i].x<this.points[min].x)
+                      min = i;
+                }
+                else if(this.points[i].y<this.points[min].y)
+                   min = i;
+             }
+       
+             // Calculate angle and distance from base
+             var al = new Array();
+             var ang = 0.0;
+             var dist = 0.0;
+             for (i = 0; i<this.points.length; i++) {
+                if (i==min)
+                   continue;
+                ang = this.angle(min, i);
+                if (ang<0)
+                   ang += Math.PI;
+                dist = this.distance(min, i);
+                al.push(new ConvexHullPoint(i, ang, dist));
+             }
+       
+             al.sort(function (a, b) { return a.compare(b); });
+       
+             // Create stack
+             var stack = new Array(this.points.length+1);
+             var j = 2;
+             for(i = 0; i<this.points.length; i++) {
+                if(i==min)
+                   continue;
+                stack[j] = al[j-2].index;
+                j++;
+             }
+             stack[0] = stack[this.points.length];
+             stack[1] = min;
+       
+             var tmp;
+             var M = 2;
+             for(i = 3; i<=this.points.length; i++) {
+                while(this.ccw(stack[M-1], stack[M], stack[i]) <= 0)
+                   M--;
+                M++;
+                tmp = stack[i];
+                stack[i] = stack[M];
+                stack[M] = tmp;
+             }
+       
+             this.indices = new Array(M);
+             for (i = 0; i<M; i++) {
+                this.indices[i] = stack[i+1];
+             }
+          }
+       }
 
-   var hull = new ConvexHull();
+       var hull = new ConvexHull();
 
-   hull.compute(pts);
-   var indices = hull.getIndices();
+       hull.compute(pts);
+       var indices = hull.getIndices();
 
-   if(indices&&indices.length>0) {
-      var ch = [];
-      for(var i=0; i<indices.length; i++) {
-         ch.push(pts[indices[i]]);
-         //echo(pts[indices[i]]);
-      }
-      //echo(ch.length+" points out",ch);
-      return CAG.fromPoints(ch);
-      //return CAG.fromPointsNoCheck(ch);
-   }
+       if(indices&&indices.length>0) {
+          var ch = [];
+          for(var i=0; i<indices.length; i++) {
+             ch.push(pts[indices[i]]);
+             //echo(pts[indices[i]]);
+          }
+          //echo(ch.length+" points out",ch);
+          return CAG.fromPoints(ch);
+          //return CAG.fromPointsNoCheck(ch);
+       }
+    }
 }
 
 // "Whosa whatsis" suggested "Chain Hull" as described at https://plus.google.com/u/0/105535247347788377245/posts/aZGXKFX1ACN
