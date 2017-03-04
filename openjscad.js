@@ -1023,6 +1023,7 @@ OpenJsCad.Processor.prototype = {
     this.statusbuttons.appendChild(this.abortbutton);
     this.formatDropdown = document.createElement("select");
     this.formatDropdown.onchange = function(e) {
+//      that.currentFormat = that.formatDropdown.options[that.formatDropdown.selectedIndex].value;
       that.currentFormat = that.formatDropdown.options[that.formatDropdown.selectedIndex].value;
       that.updateDownloadLink();
     };
@@ -1451,7 +1452,8 @@ OpenJsCad.Processor.prototype = {
 
   supportedFormatsForCurrentObject: function() {
     if (this.currentObject instanceof CSG) {
-      return ["stlb", "stla", "amf", "x3d"];
+      //return ["stlb", "stla", "amf", "x3d"];
+      return ["stlb"];
     } else if (this.currentObject instanceof CAG) {
       return ["dxf","svg"];
     } else {
