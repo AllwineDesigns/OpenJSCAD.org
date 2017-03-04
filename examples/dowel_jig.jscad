@@ -8,18 +8,18 @@ function getParameterDefinitions() {
   return [
       { name: 'dowel_diameter', caption: 'Dowel Diameter', type: 'float', initial: .375 },
       { name: 'num_dowels', caption: 'Number of Dowels', type: 'int', initial: 3 },
-      { name: 'dowel_offset', caption: 'Every Other Offset', type: 'float', initial: .25 },
-      { name: 'extra_height', caption: 'Extra Height', type: 'float', initial: 0 },
-      { name: 'extra_width', caption: 'Extra Width', type: 'float', initial: 0 },
+      { name: 'dowel_offset', caption: 'Offset', type: 'float', initial: .25 },
       { name: 'width', caption: 'Width', type: 'float', initial: 3.5 },
       { name: 'height', caption: 'Height', type: 'float', initial: 1.5 },
       { name: 'depth', caption: 'Depth', type: 'float', initial: 1 },
-      { name: 'wing_sides', caption: 'Wing sides', type: 'choice', values: [ "neither", "front", "back", "both" ], captions: ["Neither", "Front", "Back", "Both"], initial: "both" },
+      { name: 'extra_height', caption: 'Extra Height', type: 'float', initial: 0 },
+      { name: 'extra_width', caption: 'Extra Width', type: 'float', initial: 0 },
+      { name: 'wing_sides', caption: 'Wing Sides', type: 'choice', values: [ "neither", "front", "back", "both" ], captions: ["Neither", "Front", "Back", "Both"], initial: "both" },
       { name: 'wing_vertical', caption: 'Vertical Wing', type: 'checkbox', checked: true },
       { name: 'wing_horizontal', caption: 'Horizontal Wing', type: 'checkbox', checked: true },
       { name: 'wing_depth', caption: 'Wing Depth', type: 'float', initial: 1 },
       { name: 'wing_thickness', caption: 'Wing Thickness', type: 'float', initial: .25 },
-      { name: 'orient_for_3d_printing', caption: 'Orient For 3D Printing', type: 'checkbox', checked: false }
+      { name: 'orient_for_3d_printing', caption: 'Orient Holes Up', type: 'checkbox', checked: false }
   ];
 }
 
@@ -83,9 +83,7 @@ function main(params) {
   if(params.orient_for_3d_printing) {
     if(params.wing_sides === "back") {
       return jig.rotateX(90);
-    }
-
-    if(params.wing_sides === "front") {
+    } else {
       return jig.rotateX(-90);
     }
   }
