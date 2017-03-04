@@ -7,7 +7,7 @@
 function getParameterDefinitions() {
   return [
       { name: 'dowel_diameter', caption: 'Dowel Diameter', type: 'float', initial: .375 },
-      { name: 'num_dowels', caption: 'Number of Dowels', type: 'int', initial: 3 },
+      { name: 'num_dowels', caption: 'Dowels', type: 'int', initial: 3 },
       { name: 'dowel_offset', caption: 'Offset', type: 'float', initial: .25 },
       { name: 'width', caption: 'Width', type: 'float', initial: 3.5 },
       { name: 'height', caption: 'Height', type: 'float', initial: 1.5 },
