@@ -81,10 +81,10 @@ function main(params) {
   var jig = union(jig.subtract(dowels), wings);
 
   if(params.orient_for_3d_printing) {
-    if(params.wing_sides === "back") {
-      return jig.rotateX(90);
-    } else {
+    if(params.wing_sides === "front") {
       return jig.rotateX(-90);
+    } else {
+      return jig.rotateX(90);
     }
   }
 
