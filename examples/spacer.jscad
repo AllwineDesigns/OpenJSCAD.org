@@ -1,13 +1,13 @@
 function getParameterDefinitions() {
   return [
-    { name: 'bottomD', caption: 'Bottom Diameter', type: 'float', initial: 25.13 },
-    { name: 'bottomH', caption: 'Bottom Thickness', type: 'float', initial: 2.57 },
+    { name: 'bottomD', caption: 'Base Diameter', type: 'float', initial: 25.13 },
+    { name: 'bottomH', caption: 'Base Thickness', type: 'float', initial: 2.57 },
     { name: 'middleD', caption: 'Gap Diameter', type: 'float', initial: 11.56 },
     { name: 'gap', caption: 'Gap Size', type: 'float', initial: 2 },
     { name: 'topD', caption: 'Top Diameter', type: 'float', initial: 14.14 },
     { name: 'totalH', caption: 'Spacer Height', type: 'float', initial: 5.83 },
     { name: 'holeD', caption: 'Hole Diameter', type: 'float', initial: 4.76 },
-    { name: 'chamferD', caption: 'Chamfer Diameter', type: 'float', initial: 8.2 },
+    { name: 'chamferD', caption: 'Chamfer Diam.', type: 'float', initial: 8.2 },
     { name: 'chamferDepth', caption: 'Chamfer Inset', type: 'float', initial: .5 }
   ];
 }
