@@ -1171,6 +1171,11 @@ OpenJsCad.Processor.prototype = {
 
   setError: function(txt) {
     this.hasError = (txt != "");
+    // HACK - I took out the clear viewer call to prevent annoying white flashes between renders when using instant update (line 1358)
+    // it started throwing these errors occasionally, but didn't seem to be causing any problems, so I'm ignoring them
+    if(this.hasError && txt.includes("importScripts")) {
+      this.hasError = false;
+    }
     this.errorpre.textContent = txt;
     this.enableItems();
   },
@@ -1350,7 +1355,7 @@ OpenJsCad.Processor.prototype = {
   // clear previous solid and settings
     this.abort();
     this.setError("");
-    this.clearViewer();
+    //this.clearViewer();
     this.enableItems();
     this.setStatus("Rendering. Please wait <img id=busy src='imgs/busy.gif'>");
   // rebuild the solid
@@ -1759,6 +1764,7 @@ OpenJsCad.Processor.prototype = {
             that.rebuildSolid();
           }
         };
+        control.oninput = control.onchange;
         this.paramControls.push(control);
 
         var td = document.createElement("td");

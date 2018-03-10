@@ -80,6 +80,10 @@ var urlParams;
 
       loadJSCAD(urlParams["file"]);
 
+      if(urlParams["instantUpdate"] == "1") {
+        document.getElementById("instantUpdate").checked = true;
+      }
+
       if(urlParams["generatestlbutton"]) {
         $("#tail").css("display", "block");
       }
