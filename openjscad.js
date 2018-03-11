@@ -1202,6 +1202,8 @@ OpenJsCad.Processor.prototype = {
     {
       this.paramDefinitions = OpenJsCad.getParamDefinitions(script);
       this.createParamControls();
+      var that = this;
+      setTimeout(function() { that.rebuildSolid() }, 10); // Since range values can't be set until after they are inserted into the DOM, the solid is initialized with incorrect values. This triggers a rebuild after all parameters have been created and we're ready to go (see line 1705). 
     }
     catch(e)
     {
@@ -1231,6 +1233,7 @@ OpenJsCad.Processor.prototype = {
         case 'choice':
           paramValues[control.paramName] = control.options[control.selectedIndex].value;
           break;
+        case 'slider':
         case 'float':
         case 'number':
           var value = control.value;
@@ -1699,6 +1702,20 @@ OpenJsCad.Processor.prototype = {
     control.paramType = definition.type;
   // determine initial value of control
     if('initial' in definition) {
+      // range input types don't seem to like their value being changed before being added to the DOM
+      // this is a hack to set the value after it's already been added to the DOM
+
+      if(c_type.control == "range") {
+        setTimeout(function(control, definition) { 
+          return function() { 
+            control.value = definition.initial; 
+            console.log("setting using setTimeout", document.body.contains(control), control.name, control.value);
+            if(control.label) {
+              control.label.innerHTML = control.value; 
+            }
+          }
+        }(control, definition), 1); 
+      }
       control.value = definition.initial;
     } else if('default' in definition) {
       control.value = definition.default;
@@ -1714,7 +1731,7 @@ OpenJsCad.Processor.prototype = {
       }
     }
   // add a label if necessary
-    if('label' in c_type) {
+    if('label' in c_type && definition.label) {
       control.label = document.createElement("label");
       control.label.innerHTML = control.value;
     }
