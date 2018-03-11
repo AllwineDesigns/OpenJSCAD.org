@@ -9,7 +9,7 @@ include('packer.js');
 function getParameterDefinitions() {
   return [
     { name: 'width', caption: 'Width', type: 'float', initial: 37.5 },
-    { name: 'height', caption: 'Height', type: 'float', initial: 36 },
+    { name: 'height', caption: 'Height', type: 'float', initial: 33 },
     { name: 'depth', caption: 'Depth', type: 'float', initial: 28.5 },
     { name: 'thickness', caption: 'Thickness', type: 'float', initial: .75 },
 //    { name: 'overhangLeft', caption: 'Overhang Left', type: 'float', initial: 0 },
@@ -20,11 +20,11 @@ function getParameterDefinitions() {
 
     { name: 'shelfDivider', caption: 'Vertical Divider', type: 'slider', min: 0, max: 1, step: .001, initial: .5, label: false },
 
-    { name: 'leftShelfDivider1', caption: 'Left Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: 0, label: false },
+    { name: 'leftShelfDivider1', caption: 'Left Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .577, label: false },
     { name: 'leftShelfDivider2', caption: 'Left Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: 0, label: false },
 
-    { name: 'rightShelfDivider1', caption: 'Right Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .67, label: false },
-    { name: 'rightShelfDivider2', caption: 'Right Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: .33, label: false },
+    { name: 'rightShelfDivider1', caption: 'Right Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .942, label: false },
+    { name: 'rightShelfDivider2', caption: 'Right Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: .473, label: false },
 
   ];
 }
@@ -213,9 +213,18 @@ var Shelf = function(params) {
       rightHeights.push(this.params.height-this.params.thickness-this.params.thickness);
     }
 
+
+    if(hasMiddle || !this.params.noLeftShelf) {
+      message.dimensions.push({ dimension: this.params.leftShelfWidth, id: 'leftShelfWidth', label: 'Left Shelf Width' });
+    }
     for(var i = 0; i < leftHeights.length; i++) {
       message.dimensions.push({ dimension: leftHeights[i], id: 'leftShelfHeight' + (i+1), label: 'Left Shelf Height #' + (i+1) });
     }
+
+    if(hasMiddle || !this.params.noLeftShelf) {
+      message.dimensions.push({ dimension: this.params.rightShelfWidth, id: 'rightShelfWidth', label: 'Right Shelf Width' });
+    }
+
     for(var i = 0; i < rightHeights.length; i++) {
       message.dimensions.push({ dimension: rightHeights[i], id: 'rightShelfHeight' + (i+1), label: 'Right Shelf Height #' + (i+1) });
     }
