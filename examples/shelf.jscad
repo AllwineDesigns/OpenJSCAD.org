@@ -216,10 +216,10 @@ Shelf.prototype.getSolid = function() {
     var left0 = this.Left(0);
     var right0 = this.Right(0);
     var middle0;
-    var leftShelf1_0 = this.LeftShelf1(0);
-    var leftShelf2_0 = this.LeftShelf2(0);
-    var rightShelf1_0 = this.RightShelf1(0);
-    var rightShelf2_0 = this.RightShelf2(0);
+    var leftShelf1_0;
+    var leftShelf2_0;
+    var rightShelf1_0;
+    var rightShelf2_0;
     var back0 = this.Back(0);
     
     var top = difference(this.Top(r), left0, right0, back0);
@@ -246,6 +246,7 @@ Shelf.prototype.getSolid = function() {
       // left shelf 1
       console.log("this.params.noLeftShelf1", this.params.noLeftShelf1, this.params.leftShelfHeight1);
       if(!this.params.noLeftShelf1) {
+        leftShelf1_0 = this.LeftShelf1(0);
         if(hasMiddle) {
           middle = middle.subtract(leftShelf1_0);
         } else {
@@ -258,6 +259,7 @@ Shelf.prototype.getSolid = function() {
       // left shelf 2
       console.log("this.params.noLeftShelf2", this.params.noLeftShelf2, this.params.leftShelfHeight2);
       if(!this.params.noLeftShelf2) {
+        leftShelf2_0 = this.LeftShelf2(0);
         if(hasMiddle) {
           middle = middle.subtract(leftShelf2_0);
         } else {
@@ -271,6 +273,7 @@ Shelf.prototype.getSolid = function() {
     if(!this.params.noRightShelf) {
       // right shelf 1
       if(!this.params.noRightShelf1) {
+        rightShelf1_0 = this.RightShelf1(0);
         if(hasMiddle) {
           middle = middle.subtract(rightShelf1_0);
         } else {
@@ -282,6 +285,7 @@ Shelf.prototype.getSolid = function() {
 
       // right shelf 2
       if(!this.params.noRightShelf2) {
+        rightShelf2_0 = this.RightShelf2(0);
         if(hasMiddle) {
           middle = middle.subtract(rightShelf2_0);
         } else {
