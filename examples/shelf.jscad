@@ -83,17 +83,38 @@ var Shelf = function(params) {
       leftShelves--;
     }
 
+    var max = Math.max(this.params.leftShelfHeight1, this.params.leftShelfHeight2);
+    var min = Math.min(this.params.leftShelfHeight1, this.params.leftShelfHeight2);
+    if(leftShelves == 3) {
+      this.params.leftShelfHeight1 = max;
+      this.params.leftShelfHeight2 = min;
+    } else if(leftShelves == 2) {
+      this.params.leftShelfHeight1 = max;
+    }
+
     var rightInnerHeight = this.params.height-3*this.params.thickness;
+    var rightShelves = 3;
 
     this.params.rightShelfHeight1 = Math.round(8*Math.max(minShelfHeight+2*this.params.thickness, Math.min(this.params.height-this.params.thickness-minShelfHeight, rightInnerHeight*this.params.rightShelfDivider1+this.params.thickness)))/8;
     this.params.rightShelfHeight2 = Math.round(8*Math.max(minShelfHeight+2*this.params.thickness, Math.min(this.params.height-this.params.thickness-minShelfHeight, rightInnerHeight*this.params.rightShelfDivider2+this.params.thickness)))/8;
 
     if(this.params.rightShelfDivider1 == 0 || this.params.rightShelfDivider1 == 1) {
       this.params.noRightShelf1 = true;
+      rightShelves--;
     }
 
     if(this.params.rightShelfDivider2 == 0 || this.params.rightShelfDivider2 == 1 || Math.abs(this.params.rightShelfHeight1-this.params.rightShelfHeight2) < this.params.thickness+minShelfHeight) {
       this.params.noRightShelf2 = true;
+      rightShelves--;
+    }
+
+    max = Math.max(this.params.rightShelfHeight1, this.params.rightShelfHeight2);
+    min = Math.min(this.params.rightShelfHeight1, this.params.rightShelfHeight2);
+    if(rightShelves == 3) {
+      this.params.rightShelfHeight1 = max;
+      this.params.rightShelfHeight2 = min;
+    } else if(rightShelves == 2) {
+      this.params.rightShelfHeight1 = max;
     }
 
     this.params.innerDepth = this.params.depth-this.params.thickness-this.params.overhangBack-this.params.overhangFront;
@@ -165,7 +186,40 @@ var Shelf = function(params) {
         console.log("too many attempts");
         console.log(blocks);
     }
-    
+
+    var leftHeights = [];
+
+    if(leftShelves == 3) {
+      leftHeights.push(this.params.height-this.params.thickness-this.params.leftShelfHeight1);
+      leftHeights.push(this.params.leftShelfHeight1-this.params.thickness-this.params.leftShelfHeight2);
+      leftHeights.push(this.params.leftShelfHeight2-this.params.thickness-this.params.thickness);
+    } else if(leftShelves == 2) {
+      leftHeights.push(this.params.height-this.params.thickness-this.params.leftShelfHeight1);
+      leftHeights.push(this.params.leftShelfHeight1-this.params.thickness-this.params.thickness);
+    } else {
+      leftHeights.push(this.params.height-this.params.thickness-this.params.thickness);
+    }
+
+    var rightHeights = [];
+
+    if(rightShelves == 3) {
+      rightHeights.push(this.params.height-this.params.thickness-this.params.rightShelfHeight1);
+      rightHeights.push(this.params.rightShelfHeight1-this.params.thickness-this.params.rightShelfHeight2);
+      rightHeights.push(this.params.rightShelfHeight2-this.params.thickness-this.params.thickness);
+    } else if(rightShelves == 2) {
+      rightHeights.push(this.params.height-this.params.thickness-this.params.rightShelfHeight1);
+      rightHeights.push(this.params.rightShelfHeight1-this.params.thickness-this.params.thickness);
+    } else {
+      rightHeights.push(this.params.height-this.params.thickness-this.params.thickness);
+    }
+
+    for(var i = 0; i < leftHeights.length; i++) {
+      message.dimensions.push({ dimension: leftHeights[i], id: 'leftShelfHeight' + (i+1), label: 'Left Shelf Height #' + (i+1) });
+    }
+    for(var i = 0; i < rightHeights.length; i++) {
+      message.dimensions.push({ dimension: rightHeights[i], id: 'rightShelfHeight' + (i+1), label: 'Right Shelf Height #' + (i+1) });
+    }
+
     console.log(message);
     postMessage({ cmd: 'windowMessage', message: message });
 }
