@@ -4,6 +4,8 @@
 // description: a plywood shelf with up to 6 shelves
 // file       : shelf.jscad
 
+include('packer.js');
+
 function getParameterDefinitions() {
   return [
     { name: 'width', caption: 'Width', type: 'float', initial: 37.5 },
@@ -95,6 +97,77 @@ var Shelf = function(params) {
     }
 
     this.params.innerDepth = this.params.depth-this.params.thickness-this.params.overhangBack-this.params.overhangFront;
+
+    var message = {
+        materials: {
+            'plywood': []
+        },
+        dimensions: []
+    };
+    var kerf = .125;
+    var blocks = [ ];
+
+    // top
+    blocks.push({ w: this.params.width, h: this.params.depth, id: 'top', label: 'Top' });
+    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'left', label: 'Left' });
+    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'right', label: 'Right' });
+    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight, h: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, id: 'back', label: 'Back' });
+    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight, h: this.params.innerDepth+this.params.thickness, id: 'bottom', label: 'bottom' });
+
+    var hasMiddle = !this.params.noLeftShelf && !this.params.noRightShelf;
+    if(hasMiddle) {
+      blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'middle', label: 'Middle' });
+    }
+
+    if(!this.params.noLeftShelf) {
+      if(!this.params.noLeftShelf1) {
+        blocks.push({ w: this.params.leftShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'leftShelf1', label: 'Left Shelf #1' });
+      }
+      if(!this.params.noLeftShelf2) {
+        blocks.push({ w: this.params.leftShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'leftShelf2', label: 'Left Shelf #2' });
+      }
+    }
+
+    if(!this.params.noRightShelf) {
+      if(!this.params.noRightShelf1) {
+        blocks.push({ w: this.params.rightShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'rightShelf1', label: 'Right Shelf #1' });
+      }
+      if(!this.params.noRightShelf2) {
+        blocks.push({ w: this.params.rightShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'rightShelf2', label: 'Right Shelf #2' });
+      }
+    }
+
+    var attempts = 0;
+    var total_attempts = blocks.length;
+    var sheets = [];
+    while(blocks.length > 0 && attempts < total_attempts) {
+        var packer = new Packer(96+kerf, 48+kerf);
+        var sheet = [];
+        packer.fit(blocks);
+
+        var did_not_fit = [];
+
+        for(var n = 0; n < blocks.length; n++) {
+            var block = blocks[n];
+            if(block.fit) {
+                sheet.push({ w: block.w-kerf, h: block.h-kerf, x: block.fit.x, y: block.fit.y, id: block.id, label: block.label });
+            } else {
+                did_not_fit.push(block);
+            }
+        }
+
+        blocks = did_not_fit;
+        message.materials.plywood.push(sheet);
+        attempts++;
+    }
+
+    if(blocks.length > 0) {
+        console.log("too many attempts");
+        console.log(blocks);
+    }
+    
+    console.log(message);
+    postMessage({ cmd: 'windowMessage', message: message });
 }
 
 Shelf.prototype.Top = function(r) {
