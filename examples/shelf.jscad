@@ -9,9 +9,9 @@ include('packer.js');
 function getParameterDefinitions() {
   return [
     { name: 'width', caption: 'Width', type: 'float', initial: 37.5 },
-    { name: 'height', caption: 'Height', type: 'float', initial: 33 },
-    { name: 'depth', caption: 'Depth', type: 'float', initial: 28.5 },
-    { name: 'thickness', caption: 'Thickness', type: 'float', initial: .75 },
+    { name: 'height', caption: 'Height', type: 'float', initial: 32 },
+    { name: 'depth', caption: 'Depth', type: 'float', initial: 29.1875 },
+    { name: 'thickness', caption: 'Thickness', type: 'float', initial: .703 },
 //    { name: 'overhangLeft', caption: 'Overhang Left', type: 'float', initial: 0 },
 //    { name: 'overhangBack', caption: 'Overhang Back', type: 'float', initial: 0 },
 //    { name: 'overhangRight', caption: 'Overhang Right', type: 'float', initial: 0 },
@@ -20,11 +20,11 @@ function getParameterDefinitions() {
 
     { name: 'shelfDivider', caption: 'Vertical Divider', type: 'slider', min: 0, max: 1, step: .001, initial: .5, label: false },
 
-    { name: 'leftShelfDivider1', caption: 'Left Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .577, label: false },
+    { name: 'leftShelfDivider1', caption: 'Left Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .596, label: false },
     { name: 'leftShelfDivider2', caption: 'Left Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: 0, label: false },
 
-    { name: 'rightShelfDivider1', caption: 'Right Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .942, label: false },
-    { name: 'rightShelfDivider2', caption: 'Right Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: .473, label: false },
+    { name: 'rightShelfDivider1', caption: 'Right Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .907, label: false },
+    { name: 'rightShelfDivider2', caption: 'Right Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: .452, label: false },
 
   ];
 }
@@ -129,11 +129,11 @@ var Shelf = function(params) {
     var blocks = [ ];
 
     // top
-    blocks.push({ w: this.params.width, h: this.params.depth, id: 'top', label: 'Top' });
-    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'left', label: 'Left' });
-    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'right', label: 'Right' });
-    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight, h: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, id: 'back', label: 'Back' });
-    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight, h: this.params.innerDepth+this.params.thickness, id: 'bottom', label: 'bottom' });
+    blocks.push({ w: this.params.width+kerf, h: this.params.depth+kerf, id: 'top', label: 'Top' });
+    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'left', label: 'Left' });
+    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'right', label: 'Right' });
+    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, id: 'back', label: 'Back' });
+    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'bottom' });
 
     var hasMiddle = !this.params.noLeftShelf && !this.params.noRightShelf;
     if(hasMiddle) {
