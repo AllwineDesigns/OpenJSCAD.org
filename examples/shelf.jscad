@@ -11,7 +11,7 @@ function getParameterDefinitions() {
     { name: 'width', caption: 'Width', type: 'float', initial: 37.5 },
     { name: 'height', caption: 'Height', type: 'float', initial: 32 },
     { name: 'depth', caption: 'Depth', type: 'float', initial: 29.1875 },
-    { name: 'thickness', caption: 'Thickness', type: 'float', initial: .703 },
+    { name: 'thickness', caption: 'Thickness', type: 'float', initial: .75 },
 //    { name: 'overhangLeft', caption: 'Overhang Left', type: 'float', initial: 0 },
 //    { name: 'overhangBack', caption: 'Overhang Back', type: 'float', initial: 0 },
 //    { name: 'overhangRight', caption: 'Overhang Right', type: 'float', initial: 0 },
@@ -132,29 +132,29 @@ var Shelf = function(params) {
     blocks.push({ w: this.params.width+kerf, h: this.params.depth+kerf, id: 'top', label: 'Top' });
     blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'left', label: 'Left' });
     blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'right', label: 'Right' });
-    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, id: 'back', label: 'Back' });
-    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'bottom' });
+    blocks.push({ h: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, id: 'back', label: 'Back' });
+    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'Bottom' });
 
     var hasMiddle = !this.params.noLeftShelf && !this.params.noRightShelf;
     if(hasMiddle) {
-      blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'middle', label: 'Middle' });
+      blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'middle', label: 'Middle' });
     }
 
     if(!this.params.noLeftShelf) {
       if(!this.params.noLeftShelf1) {
-        blocks.push({ w: this.params.leftShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'leftShelf1', label: 'Left Shelf #1' });
+        blocks.push({ w: this.params.leftShelfWidth+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'leftShelf1', label: 'Left Shelf #1' });
       }
       if(!this.params.noLeftShelf2) {
-        blocks.push({ w: this.params.leftShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'leftShelf2', label: 'Left Shelf #2' });
+        blocks.push({ w: this.params.leftShelfWidth+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'leftShelf2', label: 'Left Shelf #2' });
       }
     }
 
     if(!this.params.noRightShelf) {
       if(!this.params.noRightShelf1) {
-        blocks.push({ w: this.params.rightShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'rightShelf1', label: 'Right Shelf #1' });
+        blocks.push({ w: this.params.rightShelfWidth+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'rightShelf1', label: 'Right Shelf #1' });
       }
       if(!this.params.noRightShelf2) {
-        blocks.push({ w: this.params.rightShelfWidth+2*this.params.dadoDepth, h: this.params.innerDepth+this.params.dadoDepth, id: 'rightShelf2', label: 'Right Shelf #2' });
+        blocks.push({ w: this.params.rightShelfWidth+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'rightShelf2', label: 'Right Shelf #2' });
       }
     }
 
