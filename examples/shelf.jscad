@@ -8,9 +8,9 @@ include('packer.js');
 
 function getParameterDefinitions() {
   return [
-    { name: 'width', caption: 'Width', type: 'float', initial: 37.5 },
+    { name: 'width', caption: 'Width', type: 'float', initial: 37.75 },
     { name: 'height', caption: 'Height', type: 'float', initial: 32 },
-    { name: 'depth', caption: 'Depth', type: 'float', initial: 29.1875 },
+    { name: 'depth', caption: 'Depth', type: 'float', initial: 29.25 },
     { name: 'thickness', caption: 'Thickness', type: 'float', initial: .75 },
 //    { name: 'overhangLeft', caption: 'Overhang Left', type: 'float', initial: 0 },
 //    { name: 'overhangBack', caption: 'Overhang Back', type: 'float', initial: 0 },
@@ -136,8 +136,6 @@ var Shelf = function(params) {
       blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'middle', label: 'Middle' });
     }
 
-    blocks.push({ h: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, id: 'back', label: 'Back' });
-
     if(!this.params.noLeftShelf) {
       if(!this.params.noLeftShelf1) {
         blocks.push({ w: this.params.leftShelfWidth+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'leftShelf1', label: 'Left Shelf #1' });
@@ -156,15 +154,33 @@ var Shelf = function(params) {
       }
     }
 
+    blocks.push({ h: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, id: 'back', label: 'Back' });
+
     blocks.push({ w: this.params.width+kerf, h: this.params.depth+kerf, id: 'top', label: 'Top' });
     blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'Bottom' });
+
+/*
+    blocks.sort(function(a,b) {
+//      return a.w-b.w;
+      return b.h-a.h;
+//      return Math.max(b.h, b.w)-Math.max(a.h, a.w);
+//      return b.h*b.w-a.h*a.w;
+    });
+    */
+
+    for(var i = 0; i < blocks.length; i++) {
+      var tmp = blocks[i].w;
+      blocks[i].w = blocks[i].h;
+      blocks[i].h = tmp;
+    }
 
 
     var attempts = 0;
     var total_attempts = blocks.length;
     var sheets = [];
     while(blocks.length > 0 && attempts < total_attempts) {
-        var packer = new Packer(96+kerf, 48+kerf);
+//        var packer = new Packer(96+kerf, 48+kerf);
+        var packer = new Packer(48+kerf, 96+kerf);
         var sheet = [];
         packer.fit(blocks);
 
@@ -173,7 +189,7 @@ var Shelf = function(params) {
         for(var n = 0; n < blocks.length; n++) {
             var block = blocks[n];
             if(block.fit) {
-                sheet.push({ w: block.w-kerf, h: block.h-kerf, x: block.fit.x, y: block.fit.y, id: block.id, label: block.label });
+                sheet.push({ h: block.w-kerf, w: block.h-kerf, y: block.fit.x, x: block.fit.y, id: block.id, label: block.label });
             } else {
                 did_not_fit.push(block);
             }
