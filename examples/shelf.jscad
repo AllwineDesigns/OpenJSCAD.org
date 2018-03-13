@@ -130,15 +130,16 @@ var Shelf = function(params) {
 
     // top
     blocks.push({ w: this.params.width+kerf, h: this.params.depth+kerf, id: 'top', label: 'Top' });
+    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'Bottom' });
     blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'left', label: 'Left' });
     blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'right', label: 'Right' });
-    blocks.push({ h: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, id: 'back', label: 'Back' });
-    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'Bottom' });
 
     var hasMiddle = !this.params.noLeftShelf && !this.params.noRightShelf;
     if(hasMiddle) {
       blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'middle', label: 'Middle' });
     }
+
+    blocks.push({ h: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, id: 'back', label: 'Back' });
 
     if(!this.params.noLeftShelf) {
       if(!this.params.noLeftShelf1) {
