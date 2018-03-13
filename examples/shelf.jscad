@@ -159,14 +159,12 @@ var Shelf = function(params) {
     blocks.push({ w: this.params.width+kerf, h: this.params.depth+kerf, id: 'top', label: 'Top' });
     blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'Bottom' });
 
-/*
     blocks.sort(function(a,b) {
 //      return a.w-b.w;
       return b.h-a.h;
 //      return Math.max(b.h, b.w)-Math.max(a.h, a.w);
 //      return b.h*b.w-a.h*a.w;
     });
-    */
 
     for(var i = 0; i < blocks.length; i++) {
       var tmp = blocks[i].w;
