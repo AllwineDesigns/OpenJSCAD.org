@@ -128,9 +128,6 @@ var Shelf = function(params) {
     var kerf = .125;
     var blocks = [ ];
 
-    // top
-    blocks.push({ w: this.params.width+kerf, h: this.params.depth+kerf, id: 'top', label: 'Top' });
-    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'Bottom' });
     blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'left', label: 'Left' });
     blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'right', label: 'Right' });
 
@@ -158,6 +155,10 @@ var Shelf = function(params) {
         blocks.push({ w: this.params.rightShelfWidth+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'rightShelf2', label: 'Right Shelf #2' });
       }
     }
+
+    blocks.push({ w: this.params.width+kerf, h: this.params.depth+kerf, id: 'top', label: 'Top' });
+    blocks.push({ w: this.params.width-this.params.overhangLeft-this.params.overhangRight+kerf, h: this.params.innerDepth+this.params.thickness+kerf, id: 'bottom', label: 'Bottom' });
+
 
     var attempts = 0;
     var total_attempts = blocks.length;
