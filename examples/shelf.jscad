@@ -164,8 +164,8 @@ var Shelf = function(params) {
 
     blocks.sort(function(a,b) {
 //      return a.w-b.w;
-      return b.h-a.h;
-//      return Math.max(b.h, b.w)-Math.max(a.h, a.w);
+//      return b.h-a.h;
+      return Math.max(b.h, b.w)-Math.max(a.h, a.w);
 //      return b.h*b.w-a.h*a.w;
     });
 
@@ -252,6 +252,7 @@ var Shelf = function(params) {
     message.dimensions.push({ dimension: this.params.sheetWidth, id: 'sheetWidth', label: 'Plywood Sheet Width' });
     message.dimensions.push({ dimension: this.params.sheetHeight, id: 'sheetHeight', label: 'Plywood Sheet Height' });
     message.dimensions.push({ dimension: this.params.thickness, id: 'sheetThickness', label: 'Plywood Sheet Thickness' });
+    message.dimensions.push({ dimension: this.params.dadoDepth, id: 'dadoDepth', label: 'Dado Depth' });
 
     console.log(message);
     console.log(JSON.stringify(message));
