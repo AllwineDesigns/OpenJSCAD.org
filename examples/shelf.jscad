@@ -131,12 +131,12 @@ var Shelf = function(params) {
     var kerf = .125;
     var blocks = [ ];
 
-    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'left', label: 'Left' });
-    blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'right', label: 'Right' });
+    blocks.push({ h: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, w: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'left', label: 'Left' });
+    blocks.push({ h: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, w: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'right', label: 'Right' });
 
     var hasMiddle = !this.params.noLeftShelf && !this.params.noRightShelf;
     if(hasMiddle) {
-      blocks.push({ w: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, h: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'middle', label: 'Middle' });
+      blocks.push({ h: this.params.height-2*this.params.thickness+2*this.params.dadoDepth+kerf, w: this.params.innerDepth+this.params.dadoDepth+kerf, id: 'middle', label: 'Middle' });
     }
 
     if(!this.params.noLeftShelf) {
@@ -182,7 +182,7 @@ var Shelf = function(params) {
     while(blocks.length > 0 && attempts < total_attempts) {
 //        var packer = new Packer(96+kerf, 48+kerf);
 //        var packer = new Packer(48+kerf, 96+kerf);
-        var packer = new Packer(this.params.sheetWidth+kerf, this.params.sheetHeight+kerf);
+        var packer = new Packer(this.params.sheetHeight+kerf, this.params.sheetWidth+kerf);
         var sheet = [];
         packer.fit(blocks);
 
@@ -251,8 +251,10 @@ var Shelf = function(params) {
 
     message.dimensions.push({ dimension: this.params.sheetWidth, id: 'sheetWidth', label: 'Plywood Sheet Width' });
     message.dimensions.push({ dimension: this.params.sheetHeight, id: 'sheetHeight', label: 'Plywood Sheet Height' });
+    message.dimensions.push({ dimension: this.params.thickness, id: 'sheetThickness', label: 'Plywood Sheet Thickness' });
 
     console.log(message);
+    console.log(JSON.stringify(message));
     postMessage({ cmd: 'windowMessage', message: message });
 }
 
