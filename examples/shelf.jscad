@@ -26,6 +26,9 @@ function getParameterDefinitions() {
     { name: 'rightShelfDivider1', caption: 'Right Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .907, label: false },
     { name: 'rightShelfDivider2', caption: 'Right Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: .452, label: false },
 
+    { name: 'sheetWidth', caption: 'Sheet Width', type: 'float', initial: 96 },
+    { name: 'sheetHeight', caption: 'Sheet Height', type: 'float', initial: 48 },
+
   ];
 }
 
@@ -178,7 +181,8 @@ var Shelf = function(params) {
     var sheets = [];
     while(blocks.length > 0 && attempts < total_attempts) {
 //        var packer = new Packer(96+kerf, 48+kerf);
-        var packer = new Packer(48+kerf, 96+kerf);
+//        var packer = new Packer(48+kerf, 96+kerf);
+        var packer = new Packer(this.params.sheetWidth+kerf, this.params.sheetHeight+kerf);
         var sheet = [];
         packer.fit(blocks);
 
@@ -244,6 +248,9 @@ var Shelf = function(params) {
     for(var i = 0; i < rightHeights.length; i++) {
       message.dimensions.push({ dimension: rightHeights[i], id: 'rightShelfHeight' + (i+1), label: 'Right Shelf Height #' + (i+1) });
     }
+
+    message.dimensions.push({ dimension: this.params.sheetWidth, id: 'sheetWidth', label: 'Plywood Sheet Width' });
+    message.dimensions.push({ dimension: this.params.sheetHeight, id: 'sheetHeight', label: 'Plywood Sheet Height' });
 
     console.log(message);
     postMessage({ cmd: 'windowMessage', message: message });
