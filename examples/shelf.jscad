@@ -200,7 +200,7 @@ var Shelf = function(params) {
 
     var blocksMaxWidth = JSON.parse(JSON.stringify(blocks));
     blocksMaxWidth.sort(function(a,b) {
-      return a.w-b.w;
+      return b.w-a.w;
     });
 
     var blocksMaxHeight = JSON.parse(JSON.stringify(blocks));
