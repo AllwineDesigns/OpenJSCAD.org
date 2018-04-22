@@ -86,21 +86,16 @@ var Shelf = function(params) {
     var widthTotal = this.params.leftShelfWidthProportion+this.params.rightShelfWidthProportion;
     var innerWidth = this.params.width-3*this.params.thickness-this.params.overhangLeft-this.params.overhangRight;
 
-    console.log(this.params.shelfDivider);
     if(this.params.shelfDivider == 0) {
       this.params.noLeftShelf = true;
       this.params.rightShelfWidth = innerWidth+this.params.thickness;
     } else if(this.params.shelfDivider == 1) {
-      console.log("shelf divider is 1");
       this.params.leftShelfWidth = innerWidth+this.params.thickness;
       this.params.noRightShelf = true;
     } else {
       this.params.leftShelfWidth = Math.min(Math.max(.125, Math.round(8*this.params.shelfDivider*innerWidth)/8), innerWidth-.125);
       this.params.rightShelfWidth = innerWidth-this.params.leftShelfWidth;
     }
-
-    console.log("Left Shelf Width: ", this.params.leftShelfWidth);
-    console.log("Right Shelf Width: ", this.params.rightShelfWidth);
 
     var leftInnerHeight = this.params.height-3*this.params.thickness;
 
@@ -223,8 +218,6 @@ var Shelf = function(params) {
       return b.h*b.w-a.h*a.w;
     });
 
-    var sheetsMaxWidth = packBlocks(blocksMaxWidth, this.params);
-
     var allSheets = [ packBlocks(blocksMaxWidth, this.params),
                       packBlocks(blocksMaxHeight, this.params),
                       packBlocks(blocksMaxDim, this.params),
@@ -283,8 +276,6 @@ var Shelf = function(params) {
     message.dimensions.push({ dimension: this.params.thickness, id: 'sheetThickness', label: 'Plywood Sheet Thickness' });
     message.dimensions.push({ dimension: this.params.dadoDepth, id: 'dadoDepth', label: 'Dado Depth' });
 
-    console.log(message);
-    console.log(JSON.stringify(message));
     postMessage({ cmd: 'windowMessage', message: message });
 }
 
@@ -362,7 +353,6 @@ Shelf.prototype.getSolid = function() {
 
     if(!this.params.noLeftShelf) {
       // left shelf 1
-      console.log("this.params.noLeftShelf1", this.params.noLeftShelf1, this.params.leftShelfHeight1);
       if(!this.params.noLeftShelf1) {
         leftShelf1_0 = this.LeftShelf1(0);
         if(hasMiddle) {
@@ -375,7 +365,6 @@ Shelf.prototype.getSolid = function() {
       }
 
       // left shelf 2
-      console.log("this.params.noLeftShelf2", this.params.noLeftShelf2, this.params.leftShelfHeight2);
       if(!this.params.noLeftShelf2) {
         leftShelf2_0 = this.LeftShelf2(0);
         if(hasMiddle) {
