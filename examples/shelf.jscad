@@ -63,7 +63,8 @@ function getParameterDefinitions() {
     { name: 'thickness', caption: 'Thickness', type: 'float', initial: .75 },
     { name: 'sheetWidth', caption: 'Sheet Width', type: 'float', initial: 96 },
     { name: 'sheetHeight', caption: 'Sheet Height', type: 'float', initial: 48 },
-    { name: 'kerf', caption: 'Kerf', type: 'float', initial: .125 }
+    { name: 'kerf', caption: 'Kerf', type: 'float', initial: .125 },
+    { name: 'units', caption: 'Units', type: 'choice', values: ["cm", "in"], captions: ["Centimeters", "Inches"], initial: "in" }
   ];
 }
 
@@ -156,7 +157,8 @@ var Shelf = function(params) {
         materials: {
             'plywood': []
         },
-        dimensions: []
+        dimensions: [],
+        units: this.params.units
     };
     var kerf = this.params.kerf;
     var blocks = [ ];
@@ -275,6 +277,8 @@ var Shelf = function(params) {
     message.dimensions.push({ dimension: this.params.sheetHeight, id: 'sheetHeight', label: 'Plywood Sheet Height' });
     message.dimensions.push({ dimension: this.params.thickness, id: 'sheetThickness', label: 'Plywood Sheet Thickness' });
     message.dimensions.push({ dimension: this.params.dadoDepth, id: 'dadoDepth', label: 'Dado Depth' });
+
+    console.log(JSON.stringify(message));
 
     postMessage({ cmd: 'windowMessage', message: message });
 }
