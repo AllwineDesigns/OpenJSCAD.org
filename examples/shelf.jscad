@@ -260,17 +260,16 @@ var Shelf = function(params) {
 
     if(hasMiddle || !this.params.noLeftShelf) {
       message.dimensions.push({ dimension: this.params.leftShelfWidth, id: 'leftShelfWidth', label: 'Left Shelf Width' });
-    }
-    for(var i = 0; i < leftHeights.length; i++) {
-      message.dimensions.push({ dimension: leftHeights[i], id: 'leftShelfHeight' + (i+1), label: 'Left Shelf Height #' + (i+1) });
+      for(var i = 0; i < leftHeights.length; i++) {
+        message.dimensions.push({ dimension: leftHeights[i], id: 'leftShelfHeight' + (i+1), label: 'Left Shelf Height #' + (i+1) });
+      }
     }
 
     if(hasMiddle || !this.params.noLeftShelf) {
       message.dimensions.push({ dimension: this.params.rightShelfWidth, id: 'rightShelfWidth', label: 'Right Shelf Width' });
-    }
-
-    for(var i = 0; i < rightHeights.length; i++) {
-      message.dimensions.push({ dimension: rightHeights[i], id: 'rightShelfHeight' + (i+1), label: 'Right Shelf Height #' + (i+1) });
+      for(var i = 0; i < rightHeights.length; i++) {
+        message.dimensions.push({ dimension: rightHeights[i], id: 'rightShelfHeight' + (i+1), label: 'Right Shelf Height #' + (i+1) });
+      }
     }
 
     message.dimensions.push({ dimension: this.params.sheetWidth, id: 'sheetWidth', label: 'Plywood Sheet Width' });
