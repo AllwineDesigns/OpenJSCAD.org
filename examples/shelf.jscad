@@ -52,7 +52,7 @@ function getParameterDefinitions() {
 //    { name: 'overhangFront', caption: 'Overhang Front', type: 'float', initial: 0 },
     { name: 'dadoDepth', caption: 'Dado Depth', type: 'float', initial: .25 },
 
-    { name: 'shelfDivider', caption: 'Vertical Divider', type: 'slider', min: 0, max: 1, step: .001, initial: .5, label: false },
+    { name: 'shelfDivider', caption: 'Divider', type: 'slider', min: 0, max: 1, step: .001, initial: .5, label: false },
 
     { name: 'leftShelfDivider1', caption: 'Left Shelf #1', type: 'slider', min: 0, max: 1, step: .001, initial: .596, label: false },
     { name: 'leftShelfDivider2', caption: 'Left Shelf #2', type: 'slider', min: 0, max: 1, step: .001, initial: 0, label: false },
