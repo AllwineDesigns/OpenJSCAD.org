@@ -276,6 +276,7 @@ var Shelf = function(params) {
     message.dimensions.push({ dimension: this.params.sheetHeight, id: 'sheetHeight', label: 'Plywood Sheet Height' });
     message.dimensions.push({ dimension: this.params.thickness, id: 'sheetThickness', label: 'Plywood Sheet Thickness' });
     message.dimensions.push({ dimension: this.params.dadoDepth, id: 'dadoDepth', label: 'Dado Depth' });
+    message.dimensions.push({ dimension: this.params.kerf, id: 'kerf', label: 'Kerf' });
 
     console.log(JSON.stringify(message));
 
