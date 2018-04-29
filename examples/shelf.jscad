@@ -153,6 +153,8 @@ var Shelf = function(params) {
 
     this.params.innerDepth = this.params.depth-this.params.thickness-this.params.overhangBack-this.params.overhangFront;
 
+    this.checkErrors();
+
     var message = {
         materials: {
             'plywood': []
@@ -281,6 +283,31 @@ var Shelf = function(params) {
     console.log(JSON.stringify(message));
 
     postMessage({ cmd: 'windowMessage', message: message });
+}
+
+Shelf.prototype.checkErrors = function() {
+    if(this.params.width > this.params.sheetHeight) {
+        throw new Error("Shelf width must be less than or equal to the Sheet Height.");
+    }
+    if(this.params.height > this.params.sheetHeight) {
+        throw new Error("Shelf height must be less than or equal to the Sheet Height.");
+    }
+    if(this.params.depth > this.params.sheetHeight) {
+        throw new Error("Shelf depth must be less than or equal to the Sheet Height.");
+    }
+
+    if(this.params.width > this.params.sheetWidth) {
+        throw new Error("Shelf width must be less than or equal to the Sheet Width.");
+    }
+    if(this.params.height > this.params.sheetWidth) {
+        throw new Error("Shelf height must be less than or equal to the Sheet Width.");
+    }
+    if(this.params.depth > this.params.sheetWidth) {
+        throw new Error("Shelf depth must be less than or equal to the Sheet Width.");
+    }
+    if(this.params.dadoDepth >= .5*this.params.thickness-.000001) {
+        throw new Error("Dado depth must be less than half the plywood thickness.");
+    }
 }
 
 Shelf.prototype.Top = function(r) {
