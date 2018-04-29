@@ -63,7 +63,7 @@ function getParameterDefinitions() {
     { name: 'thickness', caption: 'Thickness', type: 'float', initial: .75 },
     { name: 'sheetWidth', caption: 'Sheet Width', type: 'float', initial: 96 },
     { name: 'sheetHeight', caption: 'Sheet Height', type: 'float', initial: 48 },
-    { name: 'kerf', caption: 'Kerf', type: 'float', initial: .125 },
+    { name: 'kerf', caption: 'Kerf', type: 'float', initial: .25 },
     { name: 'units', caption: 'Units', type: 'choice', values: ["cm", "in"], captions: ["Centimeters", "Inches"], initial: "in" }
   ];
 }
