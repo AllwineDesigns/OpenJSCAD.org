@@ -4,7 +4,7 @@
 // description: a standing work table
 // file       : work_bench.jscad
 
-include('greedy_stock_problem.jscad');
+include('greedy_stock_problem.js');
 include('packer.js');
 
 function getParameterDefinitions() {
